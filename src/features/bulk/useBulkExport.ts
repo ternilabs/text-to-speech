@@ -204,11 +204,14 @@ export function useBulkExport(): {
         if (signal.aborted || isAbortError(exportException)) {
           await zipWriterRef.current?.abort();
           setError(null);
-          return;
+          throw new Error("Bulk export cancelled.");
         }
 
         await zipWriterRef.current?.abort();
-        setError(exportException instanceof Error ? exportException.message : "Unable to export bulk audio.");
+        const nextError =
+          exportException instanceof Error ? exportException.message : "Unable to export bulk audio.";
+        setError(nextError);
+        throw new Error(nextError);
       } finally {
         workerClient.dispose();
         workerClientRef.current = null;
