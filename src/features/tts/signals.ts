@@ -13,6 +13,10 @@ export type SingleAudioResult = {
   filename: string;
   mimeType: string;
   format: OutputFormat;
+  requestedFormat: OutputFormat;
+  voice: string;
+  device: DeviceOption;
+  speed: number;
   warnings: string[];
 };
 

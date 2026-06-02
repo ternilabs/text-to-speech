@@ -1,10 +1,6 @@
-import { useEffect, useRef } from "preact/hooks";
 import { Download, RefreshCw, Volume2, X } from "preact-feather";
 import { CsvDropzone } from "../features/bulk/components/CsvDropzone";
 import { useBulkExport } from "../features/bulk/useBulkExport";
-import { encodeMp3WithFallbackSignal } from "../features/tts/audio/mp3";
-import { validateMp3 } from "../features/tts/audio/validate";
-import { encodeWav } from "../features/tts/audio/wav";
 import { AdvancedSettings } from "../features/tts/components/AdvancedSettings";
 import { AudioPlayer } from "../features/tts/components/AudioPlayer";
 import { EssentialControls } from "../features/tts/components/EssentialControls";
@@ -22,48 +18,15 @@ import {
   speedSignal,
   statusMessageSignal,
   statusSignal,
-  textSignal,
 } from "../features/tts/signals";
-import type { OutputFormat } from "../features/tts/types";
-import { createTtsWorkerClient } from "../features/tts/workerClient";
-
-const revokeResultUrl = () => {
-  if (singleAudioResultSignal.value) {
-    URL.revokeObjectURL(singleAudioResultSignal.value.url);
-  }
-};
-
-const createAudioResult = (
-  bytes: ArrayBuffer | Uint8Array,
-  format: OutputFormat,
-  warnings: string[],
-) => {
-  const mimeType = format === "mp3" ? "audio/mpeg" : "audio/wav";
-  const extension = format === "mp3" ? "mp3" : "wav";
-  const blobPart = bytes instanceof Uint8Array ? new ArrayBuffer(bytes.byteLength) : bytes;
-  if (bytes instanceof Uint8Array) {
-    new Uint8Array(blobPart).set(bytes);
-  }
-  const blob = new Blob([blobPart], { type: mimeType });
-  const filename = `ternilabs-tts-${Date.now()}.${extension}`;
-
-  revokeResultUrl();
-  singleAudioResultSignal.value = {
-    url: URL.createObjectURL(blob),
-    filename,
-    mimeType,
-    format,
-    warnings,
-  };
-};
+import { useSingleGeneration } from "./useSingleGeneration";
 
 export function App() {
-  const workerClientRef = useRef<ReturnType<typeof createTtsWorkerClient> | null>(null);
   const bulkExport = useBulkExport();
+  const singleGeneration = useSingleGeneration();
   const isSingleMode = modeSignal.value === "single";
-  const isSingleBusy = statusSignal.value === "loading-model" || statusSignal.value === "generating";
-  const isBusy = isSingleBusy || bulkExport.isExporting;
-  const canGenerateSingle = textSignal.value.trim().length > 0 && !isBusy;
+  const isBusy = singleGeneration.isGenerating || bulkExport.isExporting;
+  const canGenerateSingle = singleGeneration.canGenerate && !bulkExport.isExporting;
   const canGenerateBulk = bulkRowsSignal.value.length > 0 && !isBusy;
   const mergedWarnings = [
     ...appWarningsSignal.value,
@@ -74,73 +37,6 @@ export function App() {
   const statusMessage = bulkExport.isExporting
     ? `Exporting zip (${bulkExport.progress.current}/${bulkExport.progress.total})`
     : statusMessageSignal.value;
-
-  useEffect(() => {
-    return () => {
-      workerClientRef.current?.dispose();
-      revokeResultUrl();
-    };
-  }, []);
-
-  const getWorkerClient = () => {
-    workerClientRef.current ??= createTtsWorkerClient({
-      onFallback: (message) => {
-        appWarningsSignal.value = [...appWarningsSignal.value, message.message];
-        statusMessageSignal.value = message.message;
-      },
-      onLoadProgress: (progress) => {
-        statusMessageSignal.value = `Loading model ${Math.round(progress)}%`;
-      },
-    });
-
-    return workerClientRef.current;
-  };
-
-  const handleSingleGenerate = async () => {
-    if (!canGenerateSingle) {
-      return;
-    }
-
-    appWarningsSignal.value = [];
-    appErrorSignal.value = null;
-    statusSignal.value = "loading-model";
-    statusMessageSignal.value = "Loading model";
-
-    try {
-      const workerClient = getWorkerClient();
-      await workerClient.load(deviceSignal.value);
-      statusSignal.value = "generating";
-      statusMessageSignal.value = "Generating audio";
-
-      const audio = await workerClient.generate({
-        text: textSignal.value.trim(),
-        voice: selectedVoiceSignal.value,
-        device: deviceSignal.value,
-        speed: speedSignal.value,
-      });
-      const wavBuffer = encodeWav(audio);
-
-      if (outputFormatSignal.value === "mp3") {
-        const mp3 = await encodeMp3WithFallbackSignal(audio);
-        const isValidMp3 = mp3.ok ? await validateMp3(mp3.bytes) : false;
-
-        if (mp3.ok && isValidMp3) {
-          createAudioResult(mp3.bytes, "mp3", []);
-        } else {
-          createAudioResult(wavBuffer, "wav", ["mp3_failed_fallback_wav"]);
-        }
-      } else {
-        createAudioResult(wavBuffer, "wav", []);
-      }
-
-      statusSignal.value = "ready";
-      statusMessageSignal.value = "Audio ready.";
-    } catch (error) {
-      statusSignal.value = "error";
-      appErrorSignal.value = error instanceof Error ? error.message : "Unable to generate audio.";
-      statusMessageSignal.value = "Generation failed.";
-    }
-  };
 
   const handleBulkGenerate = async () => {
     if (!canGenerateBulk) {
@@ -184,9 +80,7 @@ export function App() {
       return;
     }
 
-    workerClientRef.current?.cancel();
-    statusSignal.value = "cancelled";
-    statusMessageSignal.value = "Generation cancelled.";
+    singleGeneration.cancel();
   };
 
   return (
@@ -228,7 +122,7 @@ export function App() {
             type="button"
             className="primary-button"
             disabled={isSingleMode ? !canGenerateSingle : !canGenerateBulk}
-            onClick={isSingleMode ? handleSingleGenerate : handleBulkGenerate}
+            onClick={isSingleMode ? singleGeneration.generate : handleBulkGenerate}
           >
             {isBusy ? <RefreshCw size={16} strokeWidth={1.9} /> : isSingleMode ? <Volume2 size={16} strokeWidth={1.9} /> : <Download size={16} strokeWidth={1.9} />}
             {isBusy ? (bulkExport.isExporting ? "Exporting zip" : "Generating") : isSingleMode ? "Generate audio" : "Generate zip"}
