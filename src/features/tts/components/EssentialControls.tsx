@@ -8,9 +8,10 @@ import type { OutputFormat } from "../types";
 export function EssentialControls() {
   return (
     <div className="control-grid">
-      <label className="field-stack">
+      <label className="field-stack" htmlFor="voice-select">
         <span className="field-label">Voice</span>
         <select
+          id="voice-select"
           className="select-control"
           value={selectedVoiceSignal.value}
           onChange={(event) => {
@@ -24,9 +25,10 @@ export function EssentialControls() {
           ))}
         </select>
       </label>
-      <label className="field-stack">
+      <label className="field-stack" htmlFor="output-format-select">
         <span className="field-label">Output</span>
         <select
+          id="output-format-select"
           className="select-control"
           value={outputFormatSignal.value}
           onChange={(event) => {

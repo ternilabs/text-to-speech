@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { Settings } from "preact-feather";
+import { Cpu, Settings } from "preact-feather";
 import {
   deviceSignal,
   settingsOpenSignal,
@@ -27,18 +27,24 @@ export function AdvancedSettings() {
       <button
         type="button"
         className="ghost-pill"
+        aria-expanded={settingsOpenSignal.value}
+        aria-controls="advanced-settings-panel"
         onClick={() => {
           settingsOpenSignal.value = !settingsOpenSignal.value;
         }}
       >
-        <Settings size={15} stroke-width={1.8} />
+        <Settings size={15} strokeWidth={1.8} />
         Settings
       </button>
       {settingsOpenSignal.value ? (
-        <div className="settings-grid">
-          <label className="field-stack">
-            <span className="field-label">Device</span>
+        <div id="advanced-settings-panel" className="settings-grid">
+          <label className="field-stack" htmlFor="device-select">
+            <span className="field-label field-label--icon">
+              <Cpu size={13} strokeWidth={1.8} />
+              Device
+            </span>
             <select
+              id="device-select"
               className="select-control"
               value={deviceSignal.value}
               onChange={(event) => {
@@ -47,13 +53,14 @@ export function AdvancedSettings() {
             >
               <option value="wasm">WASM / CPU</option>
               <option value="webgpu" disabled={!hasWebGpu}>
-                WebGPU{hasWebGpu ? "" : " unavailable"}
+                {hasWebGpu ? "WebGPU" : "WebGPU unavailable"}
               </option>
             </select>
           </label>
-          <label className="field-stack">
-            <span className="field-label">Speed: {speedSignal.value.toFixed(2)}x</span>
+          <label className="field-stack" htmlFor="speed-range">
+            <span className="field-label">Speed {speedSignal.value.toFixed(2)}x</span>
             <input
+              id="speed-range"
               className="range-control"
               type="range"
               min="0.75"

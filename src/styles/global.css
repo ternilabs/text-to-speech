@@ -122,6 +122,12 @@ button:disabled {
   color: var(--color-dusk-gray);
 }
 
+.field-label--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .tts-textarea,
 .select-control {
   box-sizing: border-box;
@@ -164,6 +170,13 @@ button:disabled {
   gap: 10px;
 }
 
+.settings-grid {
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 22%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-parchment) 72%, var(--color-paper-white));
+}
+
 .ghost-pill {
   width: fit-content;
   min-height: 34px;
@@ -177,6 +190,11 @@ button:disabled {
 .range-control {
   width: 100%;
   accent-color: var(--color-graphite);
+}
+
+.select-control:disabled,
+.select-control option:disabled {
+  color: var(--color-faded-stone);
 }
 
 .csv-dropzone {
