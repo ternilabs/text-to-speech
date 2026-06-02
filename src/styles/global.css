@@ -331,10 +331,13 @@ button:disabled {
 
 .audio-result {
   display: grid;
-  grid-template-columns: 1fr minmax(220px, 320px) auto;
+  grid-template-columns: auto minmax(0, 1fr) minmax(180px, 260px) auto;
   gap: 12px;
   align-items: center;
-  padding-top: 2px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 24%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-parchment) 64%, var(--color-paper-white));
 }
 
 .audio-result strong {
@@ -342,10 +345,56 @@ button:disabled {
   margin-top: 3px;
   font-weight: 500;
   color: var(--color-graphite);
+  overflow-wrap: anywhere;
 }
 
 .audio-result audio {
+  display: none;
+}
+
+.audio-play-button {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--color-graphite);
+  color: var(--color-paper-white);
+}
+
+.audio-details {
+  min-width: 0;
+}
+
+.audio-meta {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-dusk-gray);
+  font-size: 12px;
+}
+
+.audio-seek {
+  display: grid;
+  gap: 5px;
+  color: var(--color-dusk-gray);
+  font-size: 12px;
+}
+
+.audio-seek input {
   width: 100%;
+  accent-color: var(--color-graphite);
+}
+
+.icon-pill {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 13px;
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 30%, transparent);
+  border-radius: 9999px;
+  color: var(--color-graphite);
+  text-decoration: none;
 }
 
 .sr-only {
