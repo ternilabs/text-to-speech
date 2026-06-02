@@ -43,6 +43,13 @@ const getStatusTone = () => {
   return "neutral";
 };
 
+const formatWarning = (warning: string) => {
+  if (warning === "mp3_failed_fallback_wav") {
+    return "MP3 failed validation. WAV fallback was used.";
+  }
+  return warning;
+};
+
 export function App() {
   const bulkExport = useBulkExport();
   const singleGeneration = useSingleGeneration();
@@ -55,6 +62,7 @@ export function App() {
     ...bulkExport.warnings,
     ...(singleAudioResultSignal.value?.warnings ?? []),
   ];
+  const uniqueWarnings = Array.from(new Set(mergedWarnings.map(formatWarning)));
   const mergedError = appErrorSignal.value ?? bulkExport.error;
   const statusMessage = bulkExport.isExporting
     ? `Exporting zip (${bulkExport.progress.current}/${bulkExport.progress.total})`
@@ -162,7 +170,7 @@ export function App() {
           message={statusMessage}
           tone={getStatusTone()}
           progress={bulkExport.isExporting ? bulkExport.progress : undefined}
-          warnings={mergedWarnings}
+          warnings={uniqueWarnings}
           error={mergedError}
         />
         {isSingleMode ? <AudioPlayer result={singleAudioResultSignal.value} /> : null}

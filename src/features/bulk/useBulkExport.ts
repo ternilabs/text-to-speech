@@ -76,7 +76,7 @@ export function useBulkExport(): {
   const workerClientRef = useRef<TtsWorkerClient | null>(null);
 
   const appendWarning = useCallback((message: string) => {
-    setWarnings((current) => [...current, message]);
+    setWarnings((current) => (current.includes(message) ? current : [...current, message]));
   }, []);
 
   const cancel = useCallback(() => {
@@ -159,6 +159,7 @@ export function useBulkExport(): {
                 outputFormat = "wav";
                 outputFilename = `${filenameStems[index]}.wav`;
                 warningsForRow.push("mp3_failed_fallback_wav");
+                appendWarning("mp3_failed_fallback_wav");
                 addZipEntry(zipWriter, outputFilename, wavBuffer);
               }
             } else {
