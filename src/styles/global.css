@@ -261,11 +261,26 @@ button:disabled {
 .status-panel {
   display: grid;
   gap: 8px;
+  min-height: 64px;
   padding: 12px;
+  border: 1px solid transparent;
   border-radius: 12px;
   background: var(--color-parchment);
   color: var(--color-graphite);
   font-size: 14px;
+}
+
+.status-panel--working {
+  border-color: color-mix(in srgb, var(--color-graphite) 18%, transparent);
+}
+
+.status-panel--success {
+  background: color-mix(in srgb, var(--color-parchment) 70%, var(--color-paper-white));
+}
+
+.status-panel--warning,
+.status-panel--error {
+  border-color: color-mix(in srgb, var(--color-dusk-gray) 30%, transparent);
 }
 
 .status-row {
@@ -293,9 +308,25 @@ button:disabled {
 }
 
 .message-list {
+  display: grid;
+  gap: 6px;
   margin: 0;
-  padding-left: 18px;
+  padding: 0;
+  list-style: none;
   color: var(--color-dusk-gray);
+}
+
+.feedback-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 0;
+  color: var(--color-dusk-gray);
+}
+
+.feedback-strip--warning,
+.feedback-strip--error {
+  color: var(--color-graphite);
 }
 
 .audio-result {

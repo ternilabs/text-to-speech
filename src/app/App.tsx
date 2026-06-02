@@ -23,6 +23,26 @@ import { AppShell } from "./AppShell";
 import { GenerationCard } from "./GenerationCard";
 import { useSingleGeneration } from "./useSingleGeneration";
 
+const getStatusTone = () => {
+  if (
+    statusSignal.value === "loading-model" ||
+    statusSignal.value === "generating" ||
+    statusSignal.value === "exporting"
+  ) {
+    return "working";
+  }
+  if (statusSignal.value === "ready") {
+    return "success";
+  }
+  if (statusSignal.value === "cancelled") {
+    return "warning";
+  }
+  if (statusSignal.value === "error") {
+    return "error";
+  }
+  return "neutral";
+};
+
 export function App() {
   const bulkExport = useBulkExport();
   const singleGeneration = useSingleGeneration();
@@ -140,6 +160,7 @@ export function App() {
 
         <StatusPanel
           message={statusMessage}
+          tone={getStatusTone()}
           progress={bulkExport.isExporting ? bulkExport.progress : undefined}
           warnings={mergedWarnings}
           error={mergedError}
