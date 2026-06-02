@@ -12,7 +12,8 @@
     "fflate": "^0.8.3",
     "kokoro-js": "^1.2.1",
     "preact": "^10.29.2",
-    "preact-feather": "^4.2.1"
+    "preact-feather": "^4.2.1",
+    "wasm-media-encoders": "^0.7.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.5",
