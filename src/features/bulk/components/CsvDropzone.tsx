@@ -1,3 +1,4 @@
+import { useState } from "preact/hooks";
 import { Upload } from "preact-feather";
 import { parseCsvToBulkRows } from "../csv";
 import {
@@ -22,14 +23,29 @@ const readCsvFile = async (file: File) => {
 };
 
 export function CsvDropzone() {
+  const [isDragActive, setIsDragActive] = useState(false);
   const rowCount = bulkRowsSignal.value.length;
 
   return (
     <div
-      className="csv-dropzone"
-      onDragOver={(event) => event.preventDefault()}
+      id="bulk-panel"
+      className={`csv-dropzone${isDragActive ? " csv-dropzone--active" : ""}`}
+      role="tabpanel"
+      onDragEnter={(event) => {
+        event.preventDefault();
+        setIsDragActive(true);
+      }}
+      onDragOver={(event) => {
+        event.preventDefault();
+        setIsDragActive(true);
+      }}
+      onDragLeave={(event) => {
+        event.preventDefault();
+        setIsDragActive(false);
+      }}
       onDrop={(event) => {
         event.preventDefault();
+        setIsDragActive(false);
         const file = event.dataTransfer?.files[0];
         if (file) {
           void readCsvFile(file);

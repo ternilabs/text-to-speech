@@ -91,6 +91,9 @@ export function App() {
         <div className="mode-toggle" role="tablist" aria-label="Generation mode">
           <button
             type="button"
+            role="tab"
+            aria-selected={isSingleMode}
+            aria-controls="single-panel"
             className={isSingleMode ? "active" : ""}
             onClick={() => {
               modeSignal.value = "single";
@@ -100,6 +103,9 @@ export function App() {
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={!isSingleMode}
+            aria-controls="bulk-panel"
             className={!isSingleMode ? "active" : ""}
             onClick={() => {
               modeSignal.value = "bulk";
