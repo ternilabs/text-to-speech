@@ -19,6 +19,8 @@ import {
   statusMessageSignal,
   statusSignal,
 } from "../features/tts/signals";
+import { AppShell } from "./AppShell";
+import { GenerationCard } from "./GenerationCard";
 import { useSingleGeneration } from "./useSingleGeneration";
 
 export function App() {
@@ -84,13 +86,8 @@ export function App() {
   };
 
   return (
-    <main className="app-shell">
-      <section className="brand-block" aria-label="TerniLabs Text-to-Speech">
-        <h1>TerniLabs</h1>
-        <p>Browser-only text-to-speech for single prompts and CSV batches.</p>
-      </section>
-
-      <section className="tts-card">
+    <AppShell>
+      <GenerationCard>
         <div className="mode-toggle" role="tablist" aria-label="Generation mode">
           <button
             type="button"
@@ -142,7 +139,7 @@ export function App() {
           error={mergedError}
         />
         {isSingleMode ? <AudioPlayer result={singleAudioResultSignal.value} /> : null}
-      </section>
-    </main>
+      </GenerationCard>
+    </AppShell>
   );
 }
