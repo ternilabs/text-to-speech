@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle, Loader } from "preact-feather";
 import type { SingleAudioResult } from "../../tts/signals";
 import type { TtsMode, TtsStatus } from "../../tts/types";
+import { ComposerAudioPlayer } from "./ComposerAudioPlayer";
 
 type ProgressState = {
   current: number;
@@ -47,9 +48,7 @@ export function ComposerStatePanel({ mode, status, message, progress, warnings, 
           <span style={{ width: `${progress.percent}%` }} />
         </div>
       ) : null}
-      {status === "ready" && mode === "single" && result ? (
-        <p className="composer-state-copy">{result.filename}</p>
-      ) : null}
+      {status === "ready" && mode === "single" && result ? <ComposerAudioPlayer result={result} /> : null}
       {status === "ready" && mode === "bulk" ? <p className="composer-state-copy">Bulk export finished.</p> : null}
       {warnings.length > 0 ? (
         <ul className="message-list">
