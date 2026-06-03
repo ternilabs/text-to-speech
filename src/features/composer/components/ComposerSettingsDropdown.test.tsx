@@ -10,6 +10,7 @@ import {
   speedSignal,
 } from "../../tts/signals";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
+import { ModelDropdown } from "./ModelDropdown";
 
 const resetSignals = () => {
   modeSignal.value = "single";
@@ -50,5 +51,15 @@ describe("ComposerSettingsDropdown", () => {
     expect(outputFormatSignal.value).toBe("mp3");
     expect(speedSignal.value).toBe(1.15);
     expect(screen.getByRole("option", { name: "WebGPU unavailable" })).toHaveProperty("disabled", true);
+  });
+});
+
+describe("ModelDropdown", () => {
+  it("shows Kokoro enabled and Pollinations disabled", () => {
+    render(<ModelDropdown />);
+
+    expect(screen.getByRole("option", { name: "Model: Kokoro" })).toHaveProperty("disabled", false);
+    expect(screen.getByRole("option", { name: "Model: Pollinations - coming soon" })).toHaveProperty("disabled", true);
+    expect(screen.queryByRole("option", { name: "Heart · en-us" })).toBeNull();
   });
 });
