@@ -1,6 +1,7 @@
 export type DeviceOption = "wasm" | "webgpu";
 export type OutputFormat = "wav" | "mp3";
 export type TtsMode = "single" | "bulk";
+export type BulkInputSource = "import" | "paste";
 export type TtsStatus =
   | "idle"
   | "loading-model"

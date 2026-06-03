@@ -5,7 +5,7 @@ import {
   DEFAULT_SPEED,
   VOICE_OPTIONS,
 } from "./constants";
-import type { DeviceOption, OutputFormat, TtsMode, TtsStatus } from "./types";
+import type { BulkInputSource, DeviceOption, OutputFormat, TtsMode, TtsStatus } from "./types";
 import type { BulkRow } from "../bulk/csv";
 
 export type SingleAudioResult = {
@@ -21,6 +21,8 @@ export type SingleAudioResult = {
 };
 
 export const modeSignal = signal<TtsMode>("single");
+export const bulkInputSourceSignal = signal<BulkInputSource>("import");
+export const bulkCsvTextSignal = signal("");
 export const textSignal = signal("");
 export const selectedVoiceSignal = signal<string>(VOICE_OPTIONS[0].id);
 export const outputFormatSignal = signal<OutputFormat>(DEFAULT_FORMAT);
