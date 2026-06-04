@@ -170,6 +170,21 @@ textarea:focus-visible {
   font-style: normal;
 }
 
+.composer-help-note {
+  margin: 0;
+  color: var(--color-dusk-gray);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.composer-help-note code {
+  color: var(--color-graphite);
+  background: color-mix(in srgb, var(--color-paper-white) 70%, transparent);
+  border-radius: 6px;
+  padding: 1px 5px;
+}
+
 .composer-footer {
   display: flex;
   align-items: center;
