@@ -1,7 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/preact";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  bulkCsvTextSignal,
+  bulkFileNameSignal,
   bulkInputSourceSignal,
+  bulkParseErrorSignal,
+  bulkRowsSignal,
   deviceSignal,
   modeSignal,
   outputFormatSignal,
@@ -15,6 +19,10 @@ import { ModelDropdown } from "./ModelDropdown";
 const resetSignals = () => {
   modeSignal.value = "single";
   bulkInputSourceSignal.value = "import";
+  bulkCsvTextSignal.value = "";
+  bulkFileNameSignal.value = "";
+  bulkParseErrorSignal.value = null;
+  bulkRowsSignal.value = [];
   selectedVoiceSignal.value = "af_heart";
   outputFormatSignal.value = "wav";
   deviceSignal.value = "wasm";
@@ -51,6 +59,45 @@ describe("ComposerSettingsDropdown", () => {
     expect(outputFormatSignal.value).toBe("mp3");
     expect(speedSignal.value).toBe(1.15);
     expect(screen.getByRole("option", { name: "WebGPU unavailable" })).toHaveProperty("disabled", true);
+  });
+
+  it("clears stale imported CSV state when Import CSV is disabled", () => {
+    modeSignal.value = "bulk";
+    bulkInputSourceSignal.value = "import";
+    bulkFileNameSignal.value = "clips.csv";
+    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello world" }];
+    bulkParseErrorSignal.value = "Old import warning";
+
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByLabelText("Import CSV"));
+
+    expect(bulkInputSourceSignal.value).toBe("paste");
+    expect(bulkCsvTextSignal.value).toBe("");
+    expect(bulkFileNameSignal.value).toBe("");
+    expect(bulkParseErrorSignal.value).toBeNull();
+    expect(bulkRowsSignal.value).toEqual([]);
+  });
+
+  it("clears stale pasted CSV state when Import CSV is enabled", () => {
+    modeSignal.value = "bulk";
+    bulkInputSourceSignal.value = "paste";
+    bulkCsvTextSignal.value = "id,text\nintro,Hello world";
+    bulkFileNameSignal.value = "Pasted CSV";
+    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello world" }];
+    bulkParseErrorSignal.value = "Old paste warning";
+
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByLabelText("Import CSV"));
+
+    expect(bulkInputSourceSignal.value).toBe("import");
+    expect(bulkCsvTextSignal.value).toBe("");
+    expect(bulkFileNameSignal.value).toBe("");
+    expect(bulkParseErrorSignal.value).toBeNull();
+    expect(bulkRowsSignal.value).toEqual([]);
   });
 });
 

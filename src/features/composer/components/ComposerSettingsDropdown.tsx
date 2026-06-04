@@ -1,6 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { Settings } from "preact-feather";
 import { VOICE_OPTIONS } from "../../tts/constants";
+import { setBulkInputSource } from "../csvInput";
 import {
   bulkInputSourceSignal,
   deviceSignal,
@@ -80,7 +81,7 @@ export function ComposerSettingsDropdown() {
                 type="checkbox"
                 checked={isImportCsv}
                 onChange={(event) => {
-                  bulkInputSourceSignal.value = (event.currentTarget as HTMLInputElement).checked ? "import" : "paste";
+                  setBulkInputSource((event.currentTarget as HTMLInputElement).checked ? "import" : "paste");
                 }}
               />
             </label>
