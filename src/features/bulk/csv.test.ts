@@ -11,6 +11,15 @@ describe("parseCsvToBulkRows", () => {
     });
   });
 
+  it("accepts the Bulk CSV format note example", () => {
+    const result = parseCsvToBulkRows('id,text\nintro,"Hello from TerniLabs"');
+
+    expect(result).toEqual({
+      rows: [{ rowIndex: 1, id: "intro", text: "Hello from TerniLabs" }],
+      hasHeader: true,
+    });
+  });
+
   it("parses quoted commas and quoted line breaks", () => {
     const result = parseCsvToBulkRows('id,text\nintro,"Hello, world"\nbody,"Line one\nLine two"');
 
