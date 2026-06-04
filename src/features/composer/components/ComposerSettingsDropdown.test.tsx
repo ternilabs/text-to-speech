@@ -99,6 +99,41 @@ describe("ComposerSettingsDropdown", () => {
     expect(bulkParseErrorSignal.value).toBeNull();
     expect(bulkRowsSignal.value).toEqual([]);
   });
+
+  it("closes settings when clicking outside the dropdown wrapper", () => {
+    render(
+      <div>
+        <ComposerSettingsDropdown />
+        <button type="button">Outside target</button>
+      </div>,
+    );
+
+    const settingsButton = screen.getByRole("button", { name: "Settings" });
+    fireEvent.click(settingsButton);
+
+    expect(settingsOpenSignal.value).toBe(true);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Outside target" }));
+
+    expect(settingsOpenSignal.value).toBe(false);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("closes settings when Escape is pressed", () => {
+    render(<ComposerSettingsDropdown />);
+
+    const settingsButton = screen.getByRole("button", { name: "Settings" });
+    fireEvent.click(settingsButton);
+
+    expect(settingsOpenSignal.value).toBe(true);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(settingsOpenSignal.value).toBe(false);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
+  });
 });
 
 describe("ModelDropdown", () => {

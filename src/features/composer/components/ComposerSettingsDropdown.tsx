@@ -1,4 +1,4 @@
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import { Settings } from "preact-feather";
 import { VOICE_OPTIONS } from "../../tts/constants";
 import { setBulkInputSource } from "../csvInput";
@@ -18,6 +18,7 @@ type NavigatorWithGpu = Navigator & {
 };
 
 export function ComposerSettingsDropdown() {
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [hasWebGpu, setHasWebGpu] = useState(false);
   const isOpen = settingsOpenSignal.value;
   const isBulk = modeSignal.value === "bulk";
@@ -31,8 +32,32 @@ export function ComposerSettingsDropdown() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (target && dropdownRef.current?.contains(target)) return;
+      settingsOpenSignal.value = false;
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        settingsOpenSignal.value = false;
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="composer-dropdown-wrap">
+    <div className="composer-dropdown-wrap" ref={dropdownRef}>
       <button
         type="button"
         className="composer-select-button"
