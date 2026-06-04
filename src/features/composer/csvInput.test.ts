@@ -6,7 +6,7 @@ import {
   bulkParseErrorSignal,
   bulkRowsSignal,
 } from "../tts/signals";
-import { applyBulkCsvFileText, applyBulkCsvText, clearBulkCsvInput } from "./csvInput";
+import { applyBulkCsvFileText, applyBulkCsvText, clearBulkCsvInput, setBulkInputSource } from "./csvInput";
 
 const resetBulkSignals = () => {
   bulkInputSourceSignal.value = "import";
@@ -65,5 +65,41 @@ describe("composer csv input", () => {
     expect(bulkFileNameSignal.value).toBe("");
     expect(bulkParseErrorSignal.value).toBeNull();
     expect(bulkRowsSignal.value).toEqual([]);
+  });
+
+  it("clears stale imported CSV state when switching to pasted CSV input", () => {
+    applyBulkCsvFileText("clips.csv", "id,text\nintro,Hello world");
+
+    setBulkInputSource("paste");
+
+    expect(bulkInputSourceSignal.value).toBe("paste");
+    expect(bulkCsvTextSignal.value).toBe("");
+    expect(bulkFileNameSignal.value).toBe("");
+    expect(bulkParseErrorSignal.value).toBeNull();
+    expect(bulkRowsSignal.value).toEqual([]);
+  });
+
+  it("clears stale pasted CSV state when switching to imported CSV input", () => {
+    applyBulkCsvText("id,title\nintro,Missing text");
+
+    setBulkInputSource("import");
+
+    expect(bulkInputSourceSignal.value).toBe("import");
+    expect(bulkCsvTextSignal.value).toBe("");
+    expect(bulkFileNameSignal.value).toBe("");
+    expect(bulkParseErrorSignal.value).toBeNull();
+    expect(bulkRowsSignal.value).toEqual([]);
+  });
+
+  it("preserves active CSV state when setting the current source again", () => {
+    applyBulkCsvFileText("clips.csv", "id,text\nintro,Hello world");
+
+    setBulkInputSource("import");
+
+    expect(bulkInputSourceSignal.value).toBe("import");
+    expect(bulkCsvTextSignal.value).toBe("");
+    expect(bulkFileNameSignal.value).toBe("clips.csv");
+    expect(bulkParseErrorSignal.value).toBeNull();
+    expect(bulkRowsSignal.value).toEqual([{ rowIndex: 1, id: "intro", text: "Hello world" }]);
   });
 });

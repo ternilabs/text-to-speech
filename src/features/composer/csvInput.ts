@@ -6,10 +6,18 @@ import {
   bulkParseErrorSignal,
   bulkRowsSignal,
 } from "../tts/signals";
+import type { BulkInputSource } from "../tts/types";
 
 const EMPTY_ROWS_ERROR = "CSV did not contain any valid text rows.";
 
 const getEmptyRowsError = (input: string) => (input.trim().length > 0 ? EMPTY_ROWS_ERROR : null);
+
+export const setBulkInputSource = (source: BulkInputSource) => {
+  if (bulkInputSourceSignal.value === source) return;
+
+  bulkInputSourceSignal.value = source;
+  clearBulkCsvInput();
+};
 
 export const applyBulkCsvText = (input: string) => {
   bulkInputSourceSignal.value = "paste";
