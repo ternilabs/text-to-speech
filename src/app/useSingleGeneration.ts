@@ -57,22 +57,22 @@ const createAudioResult = (
   };
 };
 
+type TtsWorkerClient = ReturnType<typeof createTtsWorkerClient>;
+
 export function useSingleGeneration(): {
   isGenerating: boolean;
+  isModelLoading: boolean;
   canGenerate: boolean;
   generate(): Promise<void>;
   cancel(): void;
 } {
-  const workerClientRef = useRef<ReturnType<typeof createTtsWorkerClient> | null>(null);
-  const isGenerating = statusSignal.value === "loading-model" || statusSignal.value === "generating";
+  const workerClientRef = useRef<TtsWorkerClient | null>(null);
+  const loadPromiseRef = useRef<Promise<void> | null>(null);
+  const loadingDeviceRef = useRef<typeof deviceSignal.value | null>(null);
+  const loadedDeviceRef = useRef<typeof deviceSignal.value | null>(null);
+  const isModelLoading = statusSignal.value === "loading-model";
+  const isGenerating = isModelLoading || statusSignal.value === "generating";
   const canGenerate = textSignal.value.trim().length > 0 && !isGenerating;
-
-  useEffect(() => {
-    return () => {
-      workerClientRef.current?.dispose();
-      revokeResultUrl();
-    };
-  }, []);
 
   const getWorkerClient = () => {
     workerClientRef.current ??= createTtsWorkerClient({
@@ -88,6 +88,71 @@ export function useSingleGeneration(): {
     return workerClientRef.current;
   };
 
+  const ensureModelLoaded = async () => {
+    const requestedDevice = deviceSignal.value;
+
+    if (loadedDeviceRef.current === requestedDevice) {
+      return;
+    }
+
+    if (loadPromiseRef.current) {
+      await loadPromiseRef.current;
+      if (loadedDeviceRef.current === requestedDevice) {
+        return;
+      }
+    }
+
+    statusSignal.value = "loading-model";
+    statusMessageSignal.value = "Loading Kokoro model";
+    loadingDeviceRef.current = requestedDevice;
+
+    loadPromiseRef.current = getWorkerClient()
+      .load(requestedDevice)
+      .then(() => {
+        loadedDeviceRef.current = requestedDevice;
+      })
+      .catch((error) => {
+        loadedDeviceRef.current = null;
+        throw error;
+      })
+      .finally(() => {
+        loadPromiseRef.current = null;
+        loadingDeviceRef.current = null;
+      });
+
+    await loadPromiseRef.current;
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const preload = async () => {
+      appErrorSignal.value = null;
+
+      try {
+        await ensureModelLoaded();
+        if (!cancelled && statusSignal.value === "loading-model") {
+          statusSignal.value = "idle";
+          statusMessageSignal.value = "Kokoro model ready.";
+        }
+      } catch (error) {
+        if (!cancelled) {
+          statusSignal.value = "error";
+          appErrorSignal.value = error instanceof Error ? error.message : "Unable to preload Kokoro model.";
+          statusMessageSignal.value = "Model preload failed.";
+        }
+      }
+    };
+
+    void preload();
+
+    return () => {
+      cancelled = true;
+      workerClientRef.current?.dispose();
+      revokeResultUrl();
+    };
+  }, []);
+
   const generate = async () => {
     if (!canGenerate) {
       return;
@@ -99,8 +164,8 @@ export function useSingleGeneration(): {
     statusMessageSignal.value = "Loading model";
 
     try {
+      await ensureModelLoaded();
       const workerClient = getWorkerClient();
-      await workerClient.load(deviceSignal.value);
       statusSignal.value = "generating";
       statusMessageSignal.value = "Generating audio";
 
@@ -140,5 +205,5 @@ export function useSingleGeneration(): {
     statusMessageSignal.value = "Generation cancelled.";
   };
 
-  return { isGenerating, canGenerate, generate, cancel };
+  return { isGenerating, isModelLoading, canGenerate, generate, cancel };
 }
