@@ -34,8 +34,9 @@ input:disabled,
 select:disabled {
   cursor: not-allowed;
   color: var(--color-faded-stone);
-  background: color-mix(in srgb, var(--color-parchment) 72%, var(--color-paper-white));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-faded-stone) 24%, transparent);
+  background: color-mix(in srgb, var(--color-parchment) 78%, var(--color-paper-white));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-faded-stone) 18%, transparent);
+  opacity: 1;
 }
 
 button:focus-visible,
@@ -90,27 +91,29 @@ textarea:focus-visible {
 .composer-card {
   width: min(100% - 32px, 760px);
   box-sizing: border-box;
-  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 28%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 26%, transparent);
   border-radius: 16px;
   background: var(--color-parchment);
 }
 
 .composer-input-zone {
   display: grid;
-  gap: 10px;
+  gap: 0;
   padding: 12px;
 }
 
 .composer-input-pane {
   display: grid;
   gap: 8px;
+  min-height: 176px;
 }
 
 .composer-textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: 168px;
-  max-height: 168px;
+  min-height: 176px;
+  max-height: 176px;
+  padding: 4px 4px 8px;
   resize: none;
   border: 0;
   border-radius: 8px;
@@ -118,6 +121,10 @@ textarea:focus-visible {
   background: transparent;
   color: var(--color-inkwell);
   line-height: 1.5;
+}
+
+.composer-textarea::placeholder {
+  color: var(--color-dusk-gray);
 }
 
 .composer-textarea:focus,
@@ -189,7 +196,9 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid color-mix(in srgb, var(--color-faded-stone) 22%, transparent);
 }
 
 .composer-footer-left,
@@ -198,7 +207,15 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
+}
+
+.composer-footer-left {
+  min-width: 0;
+}
+
+.composer-footer-right {
+  min-width: 0;
+  justify-content: flex-end;
 }
 
 .composer-dropdown-wrap {
@@ -207,7 +224,7 @@ textarea:focus-visible {
 
 .composer-select-button,
 .composer-model-select {
-  min-height: 34px;
+  min-height: 36px;
   border: 1px solid color-mix(in srgb, var(--color-faded-stone) 30%, transparent);
   border-radius: 9999px;
   background: var(--color-paper-white);
@@ -223,7 +240,30 @@ textarea:focus-visible {
 }
 
 .composer-model-select {
+  max-width: 188px;
   padding: 0 12px;
+}
+
+.composer-actions .ghost-pill {
+  width: fit-content;
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 30%, transparent);
+  background: transparent;
+  color: var(--color-graphite);
+  text-decoration: none;
+}
+
+.composer-actions .primary-button {
+  min-height: 36px;
+  padding: 0 16px;
+  background: var(--color-graphite);
+  color: var(--color-paper-white);
+}
+
+.composer-actions .primary-button:disabled {
+  background: color-mix(in srgb, var(--color-graphite) 22%, var(--color-parchment));
+  color: var(--color-dusk-gray);
 }
 
 .composer-dropdown {
@@ -742,16 +782,25 @@ textarea:focus-visible {
     flex-direction: column;
   }
 
-  .composer-footer,
-  .composer-footer-right,
-  .composer-actions {
+  .composer-footer {
+    display: grid;
+    grid-template-columns: 1fr;
     align-items: stretch;
-    flex-direction: column;
   }
 
   .composer-footer-left,
   .composer-footer-right,
-  .composer-actions,
+  .composer-actions {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .composer-footer-right,
+  .composer-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
   .composer-actions .primary-button,
   .composer-actions .ghost-pill,
   .composer-model-select,
