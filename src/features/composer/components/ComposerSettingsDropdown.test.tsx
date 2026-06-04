@@ -12,7 +12,9 @@ import {
   selectedVoiceSignal,
   settingsOpenSignal,
   speedSignal,
+  textSignal,
 } from "../../tts/signals";
+import { TTS_SETTINGS_STORAGE_KEY } from "../../tts/settingsStorage";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
 import { ModelDropdown } from "./ModelDropdown";
 
@@ -33,6 +35,7 @@ const resetSignals = () => {
 describe("ComposerSettingsDropdown", () => {
   beforeEach(() => {
     resetSignals();
+    localStorage.clear();
   });
 
   it("opens settings and updates mode plus import source", () => {
@@ -191,6 +194,54 @@ describe("ComposerSettingsDropdown", () => {
     fireEvent.click(settingsButton);
 
     expect(settingsOpenSignal.value).toBe(false);
+  });
+
+  it("persists Settings dropdown generation choices", () => {
+    Object.defineProperty(navigator, "gpu", {
+      configurable: true,
+      value: {},
+    });
+
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
+    fireEvent.click(screen.getByLabelText("Import CSV"));
+    fireEvent.change(screen.getByLabelText("Voice"), { target: { value: "am_adam" } });
+    fireEvent.change(screen.getByLabelText("Format"), { target: { value: "mp3" } });
+    fireEvent.change(screen.getByLabelText("Device"), { target: { value: "webgpu" } });
+    fireEvent.input(screen.getByLabelText("Speed 1.00x"), { target: { value: "1.15" } });
+
+    expect(JSON.parse(localStorage.getItem(TTS_SETTINGS_STORAGE_KEY) ?? "{}")).toEqual({
+      mode: "bulk",
+      bulkInputSource: "paste",
+      voice: "am_adam",
+      format: "mp3",
+      device: "webgpu",
+      speed: 1.15,
+    });
+  });
+
+  it("does not persist transient composer content with Settings choices", () => {
+    textSignal.value = "Do not persist";
+    bulkCsvTextSignal.value = "id,text\nintro,Do not persist";
+    bulkFileNameSignal.value = "clips.csv";
+    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Do not persist" }];
+    bulkParseErrorSignal.value = "Do not persist";
+    settingsOpenSignal.value = true;
+
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
+
+    expect(JSON.parse(localStorage.getItem(TTS_SETTINGS_STORAGE_KEY) ?? "{}")).toEqual({
+      mode: "bulk",
+      bulkInputSource: "import",
+      voice: "af_heart",
+      format: "wav",
+      device: "wasm",
+      speed: 1,
+    });
   });
 });
 
