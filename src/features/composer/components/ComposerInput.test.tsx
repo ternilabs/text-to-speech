@@ -12,6 +12,13 @@ import {
 import { setBulkInputSource } from "../csvInput";
 import { ComposerInput } from "./ComposerInput";
 
+const CSV_FORMAT_NOTE_TEXT = 'CSV format: id,text · Example: intro,"Hello from TerniLabs"';
+
+const queryCsvFormatNote = () =>
+  screen.queryByText((_, element) =>
+    Boolean(element?.classList.contains("composer-help-note") && element.textContent === CSV_FORMAT_NOTE_TEXT),
+  );
+
 const resetSignals = () => {
   modeSignal.value = "single";
   textSignal.value = "";
@@ -44,6 +51,36 @@ describe("ComposerInput", () => {
     expect(screen.getByText("Drop CSV file here")).toBeTruthy();
     expect(screen.getByText("No file selected")).toBeTruthy();
     expect(screen.getByText("0 rows loaded")).toBeTruthy();
+  });
+
+  it("shows CSV format guidance in bulk import mode", () => {
+    modeSignal.value = "bulk";
+    bulkInputSourceSignal.value = "import";
+
+    render(<ComposerInput />);
+
+    expect(queryCsvFormatNote()).toBeTruthy();
+    expect(screen.getByText("id,text")).toBeTruthy();
+    expect(screen.getByText('intro,"Hello from TerniLabs"')).toBeTruthy();
+  });
+
+  it("shows CSV format guidance in bulk paste mode", () => {
+    modeSignal.value = "bulk";
+    bulkInputSourceSignal.value = "paste";
+
+    render(<ComposerInput />);
+
+    expect(queryCsvFormatNote()).toBeTruthy();
+    expect(screen.getByText("id,text")).toBeTruthy();
+    expect(screen.getByText('intro,"Hello from TerniLabs"')).toBeTruthy();
+  });
+
+  it("does not show CSV format guidance in single mode", () => {
+    render(<ComposerInput />);
+
+    expect(queryCsvFormatNote()).toBeNull();
+    expect(screen.queryByText("id,text")).toBeNull();
+    expect(screen.queryByText('intro,"Hello from TerniLabs"')).toBeNull();
   });
 
   it("shows imported CSV summary state", () => {

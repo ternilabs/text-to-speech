@@ -23,6 +23,14 @@ const readCsvFile = async (file: File) => {
   }
 };
 
+function BulkCsvFormatNote() {
+  return (
+    <p className="composer-help-note">
+      CSV format: <code>id,text</code> · Example: <code>intro,"Hello from TerniLabs"</code>
+    </p>
+  );
+}
+
 export function ComposerInput() {
   const [isDragActive, setIsDragActive] = useState(false);
   const isBulkMode = modeSignal.value === "bulk";
@@ -57,6 +65,7 @@ export function ComposerInput() {
             applyBulkCsvText((event.currentTarget as HTMLTextAreaElement).value);
           }}
         />
+        <BulkCsvFormatNote />
         <div className="composer-input-summary" aria-live="polite">
           <strong>{rowCount} rows loaded</strong>
           {bulkParseErrorSignal.value ? <em>{bulkParseErrorSignal.value}</em> : null}
@@ -95,6 +104,7 @@ export function ComposerInput() {
       <div className="composer-drop-copy">
         <strong>Drop CSV file here</strong>
         <span>Drag and drop a CSV file, or choose a file from your device.</span>
+        <BulkCsvFormatNote />
         <label className="upload-label">
           Open file
           <input
