@@ -27,6 +27,7 @@ export function App() {
   const bulkExport = useBulkExport();
   const singleGeneration = useSingleGeneration();
   const isSingleMode = modeSignal.value === "single";
+  const isModelLoading = singleGeneration.isModelLoading;
   const isBusy = singleGeneration.isGenerating || bulkExport.isExporting;
   const canGenerateSingle = singleGeneration.canGenerate && !bulkExport.isExporting;
   const canGenerateBulk = bulkRowsSignal.value.length > 0 && !isBusy;
@@ -92,6 +93,7 @@ export function App() {
         isSingleMode={isSingleMode}
         isBusy={isBusy}
         isBulkExporting={bulkExport.isExporting}
+        isModelLoading={isModelLoading}
         canGenerate={isSingleMode ? canGenerateSingle : canGenerateBulk}
         onGenerate={isSingleMode ? singleGeneration.generate : handleBulkGenerate}
         onCancel={handleCancel}
