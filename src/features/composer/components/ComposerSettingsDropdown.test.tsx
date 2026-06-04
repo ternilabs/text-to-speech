@@ -151,6 +151,31 @@ describe("ComposerSettingsDropdown", () => {
     expect(selectedVoiceSignal.value).toBe("am_adam");
     expect(speedSignal.value).toBe(1.15);
   });
+
+  it("keeps aria-expanded accurate across open, outside close, and reopen", () => {
+    render(
+      <div>
+        <ComposerSettingsDropdown />
+        <button type="button">Outside target</button>
+      </div>,
+    );
+
+    const settingsButton = screen.getByRole("button", { name: "Settings" });
+
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(settingsButton);
+    expect(settingsOpenSignal.value).toBe(true);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
+
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Outside target" }));
+    expect(settingsOpenSignal.value).toBe(false);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(settingsButton);
+    expect(settingsOpenSignal.value).toBe(true);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
+  });
 });
 
 describe("ModelDropdown", () => {
