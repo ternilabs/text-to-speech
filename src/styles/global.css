@@ -679,11 +679,11 @@ textarea:focus-visible {
   box-sizing: border-box;
   display: grid;
   gap: 10px;
-  min-height: 72px;
+  min-height: 68px;
   padding: 12px;
-  border: 1px solid transparent;
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 18%, transparent);
   border-radius: 16px;
-  background: var(--color-parchment);
+  background: color-mix(in srgb, var(--color-parchment) 72%, var(--color-paper-white));
   color: var(--color-graphite);
   font-size: 14px;
 }
@@ -693,7 +693,7 @@ textarea:focus-visible {
 }
 
 .composer-state-panel--success {
-  background: color-mix(in srgb, var(--color-parchment) 70%, var(--color-paper-white));
+  background: var(--color-parchment);
 }
 
 .composer-state-panel--warning,
@@ -706,12 +706,19 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-width: 0;
   text-align: center;
+}
+
+.composer-state-main span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .composer-state-main strong {
   margin-left: auto;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .composer-state-copy {
@@ -726,13 +733,55 @@ textarea:focus-visible {
   gap: 12px;
   align-items: center;
   padding: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 24%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 22%, transparent);
   border-radius: 12px;
-  background: color-mix(in srgb, var(--color-parchment) 64%, var(--color-paper-white));
+  background: var(--color-paper-white);
 }
 
 .composer-audio-player audio {
   display: none;
+}
+
+.composer-audio-player .audio-play-button {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--color-graphite);
+  color: var(--color-paper-white);
+}
+
+.composer-audio-player .audio-details {
+  min-width: 0;
+}
+
+.composer-audio-player .audio-details strong {
+  display: block;
+  margin-top: 3px;
+  color: var(--color-graphite);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.composer-audio-player .audio-meta {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-dusk-gray);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.composer-audio-player .audio-seek {
+  display: grid;
+  gap: 5px;
+  color: var(--color-dusk-gray);
+  font-size: 12px;
+}
+
+.composer-audio-player .audio-seek input {
+  width: 100%;
+  accent-color: var(--color-graphite);
 }
 
 .waveform-track {

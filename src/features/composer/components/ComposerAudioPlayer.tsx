@@ -93,6 +93,7 @@ export function ComposerAudioPlayer({ result }: ComposerAudioPlayerProps) {
           ))}
         </span>
         <input
+          aria-label="Seek generated audio"
           type="range"
           min="0"
           max={duration || 0}

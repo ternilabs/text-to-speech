@@ -49,7 +49,9 @@ export function ComposerStatePanel({ mode, status, message, progress, warnings, 
         </div>
       ) : null}
       {status === "ready" && mode === "single" && result ? <ComposerAudioPlayer result={result} /> : null}
-      {status === "ready" && mode === "bulk" ? <p className="composer-state-copy">Bulk export finished.</p> : null}
+      {status === "ready" && mode === "bulk" && panelMessage !== "Bulk export finished." ? (
+        <p className="composer-state-copy">Bulk export finished.</p>
+      ) : null}
       {warnings.length > 0 ? (
         <ul className="message-list">
           {warnings.map((warning, index) => (
