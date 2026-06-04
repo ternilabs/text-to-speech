@@ -134,6 +134,23 @@ describe("ComposerSettingsDropdown", () => {
     expect(settingsOpenSignal.value).toBe(false);
     expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
   });
+
+  it("keeps settings open when interacting with dropdown controls", () => {
+    render(<ComposerSettingsDropdown />);
+
+    const settingsButton = screen.getByRole("button", { name: "Settings" });
+    fireEvent.click(settingsButton);
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Bulk" }));
+    fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
+    fireEvent.change(screen.getByLabelText("Voice"), { target: { value: "am_adam" } });
+    fireEvent.input(screen.getByLabelText("Speed 1.00x"), { target: { value: "1.15" } });
+
+    expect(settingsOpenSignal.value).toBe(true);
+    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
+    expect(modeSignal.value).toBe("bulk");
+    expect(selectedVoiceSignal.value).toBe("am_adam");
+    expect(speedSignal.value).toBe(1.15);
+  });
 });
 
 describe("ModelDropdown", () => {
