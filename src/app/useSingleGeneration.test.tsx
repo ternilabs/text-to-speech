@@ -158,4 +158,38 @@ describe("useSingleGeneration", () => {
 
     expect(workerClientMock.generate).not.toHaveBeenCalled();
   });
+
+  it("loads a new device during generation when the selected device changes after preload", async () => {
+    textSignal.value = "Generate on changed device";
+    workerClientMock.load.mockResolvedValue(undefined);
+    workerClientMock.generate.mockResolvedValue({
+      pcm: new Float32Array([0, 0.1, -0.1]),
+      sampleRate: 24000,
+    });
+
+    render(<TestHarness />);
+
+    await waitFor(() => {
+      expect(statusSignal.value).toBe("idle");
+    });
+
+    deviceSignal.value = "webgpu";
+
+    fireEvent.click(screen.getByRole("button", { name: "Generate" }));
+
+    await waitFor(() => {
+      expect(workerClientMock.generate).toHaveBeenCalledTimes(1);
+      expect(statusSignal.value).toBe("ready");
+    });
+
+    expect(workerClientMock.load).toHaveBeenCalledTimes(2);
+    expect(workerClientMock.load).toHaveBeenNthCalledWith(1, "wasm");
+    expect(workerClientMock.load).toHaveBeenNthCalledWith(2, "webgpu");
+    expect(workerClientMock.generate).toHaveBeenCalledWith({
+      text: "Generate on changed device",
+      voice: "af_heart",
+      device: "webgpu",
+      speed: 1,
+    });
+  });
 });
