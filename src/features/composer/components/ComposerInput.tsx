@@ -31,6 +31,8 @@ function BulkCsvFormatNote() {
   );
 }
 
+const formatLoadedRows = (rowCount: number) => `${rowCount} ${rowCount === 1 ? "row" : "rows"} loaded`;
+
 export function ComposerInput() {
   const [isDragActive, setIsDragActive] = useState(false);
   const isBulkMode = modeSignal.value === "bulk";
@@ -67,7 +69,7 @@ export function ComposerInput() {
         />
         <BulkCsvFormatNote />
         <div className="composer-input-summary" aria-live="polite">
-          <strong>{rowCount} rows loaded</strong>
+          <strong>{formatLoadedRows(rowCount)}</strong>
           {bulkParseErrorSignal.value ? <em>{bulkParseErrorSignal.value}</em> : null}
         </div>
       </section>
@@ -121,8 +123,8 @@ export function ComposerInput() {
         </label>
       </div>
       <div className="composer-input-summary" aria-live="polite">
-        {bulkFileNameSignal.value ? <span>{bulkFileNameSignal.value}</span> : <span>No file selected</span>}
-        <strong>{rowCount} rows loaded</strong>
+        {bulkFileNameSignal.value ? <span>{bulkFileNameSignal.value}</span> : <span>No CSV loaded yet</span>}
+        <strong>{formatLoadedRows(rowCount)}</strong>
         {bulkParseErrorSignal.value ? <em>{bulkParseErrorSignal.value}</em> : null}
       </div>
     </section>

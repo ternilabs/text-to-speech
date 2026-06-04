@@ -49,7 +49,7 @@ describe("ComposerInput", () => {
     render(<ComposerInput />);
 
     expect(screen.getByText("Drop CSV file here")).toBeTruthy();
-    expect(screen.getByText("No file selected")).toBeTruthy();
+    expect(screen.getByText("No CSV loaded yet")).toBeTruthy();
     expect(screen.getByText("0 rows loaded")).toBeTruthy();
   });
 
@@ -92,8 +92,19 @@ describe("ComposerInput", () => {
     render(<ComposerInput />);
 
     expect(screen.getByText("clips.csv")).toBeTruthy();
-    expect(screen.getByText("1 rows loaded")).toBeTruthy();
+    expect(screen.getByText("1 row loaded")).toBeTruthy();
     expect(screen.getByText("CSV warning")).toBeTruthy();
+  });
+
+  it("uses singular row-count copy for one imported row", () => {
+    modeSignal.value = "bulk";
+    bulkFileNameSignal.value = "clips.csv";
+    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello" }];
+
+    render(<ComposerInput />);
+
+    expect(screen.getByText("clips.csv")).toBeTruthy();
+    expect(screen.getByText("1 row loaded")).toBeTruthy();
   });
 
   it("renders pasted CSV input when import is disabled", () => {
@@ -138,7 +149,7 @@ describe("ComposerInput", () => {
     render(<ComposerInput />);
 
     expect(screen.getByText("Drop CSV file here")).toBeTruthy();
-    expect(screen.getByText("No file selected")).toBeTruthy();
+    expect(screen.getByText("No CSV loaded yet")).toBeTruthy();
     expect(screen.getByText("0 rows loaded")).toBeTruthy();
     expect(screen.queryByText("Pasted CSV")).toBeNull();
     expect(screen.queryByText("Old paste warning")).toBeNull();

@@ -135,13 +135,13 @@ textarea:focus-visible {
 
 .composer-dropzone {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 14px;
   align-items: center;
-  min-height: 168px;
+  min-height: 176px;
   box-sizing: border-box;
-  padding: 18px;
-  border: 1px dashed color-mix(in srgb, var(--color-faded-stone) 48%, transparent);
+  padding: 16px;
+  border: 1px dashed color-mix(in srgb, var(--color-faded-stone) 44%, transparent);
   border-radius: 8px;
   color: var(--color-graphite);
 }
@@ -161,10 +161,12 @@ textarea:focus-visible {
 .composer-input-summary {
   color: var(--color-dusk-gray);
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .composer-input-summary {
   justify-items: end;
+  min-width: 124px;
 }
 
 .composer-input-summary strong {
@@ -271,29 +273,38 @@ textarea:focus-visible {
   left: 0;
   bottom: calc(100% + 8px);
   z-index: 10;
-  width: min(340px, calc(100vw - 48px));
+  width: min(356px, calc(100vw - 48px));
   display: grid;
-  gap: 10px;
-  padding: 12px;
+  gap: 6px;
+  padding: 8px;
   border: 1px solid color-mix(in srgb, var(--color-faded-stone) 24%, transparent);
   border-radius: 12px;
   background: var(--color-paper-white);
-  box-shadow: 0 18px 48px color-mix(in srgb, var(--color-graphite) 14%, transparent);
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--color-graphite) 10%, transparent);
 }
 
 .dropdown-title {
   margin: 0;
+  padding: 2px 4px 4px;
   color: var(--color-dusk-gray);
   font-size: 12px;
+  line-height: 1.5;
 }
 
 .settings-row {
   display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 8px;
   align-items: center;
+  min-height: 38px;
+  padding: 4px;
+  border-radius: 8px;
   color: var(--color-graphite);
   font-size: 13px;
+}
+
+.settings-row > span:first-child {
+  color: var(--color-dusk-gray);
 }
 
 .mini-segment {
@@ -323,7 +334,17 @@ textarea:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+}
+
+.composer-settings-dropdown .select-control {
+  min-height: 34px;
+  padding: 0 10px;
+}
+
+.composer-settings-dropdown .range-control {
+  width: 100%;
+  accent-color: var(--color-graphite);
 }
 
 .sr-only-wrapper {
@@ -775,6 +796,7 @@ textarea:focus-visible {
   .csv-summary,
   .composer-input-summary {
     justify-items: start;
+    min-width: 0;
   }
 
   .action-row {
