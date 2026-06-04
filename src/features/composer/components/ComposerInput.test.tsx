@@ -9,6 +9,7 @@ import {
   modeSignal,
   textSignal,
 } from "../../tts/signals";
+import { setBulkInputSource } from "../csvInput";
 import { ComposerInput } from "./ComposerInput";
 
 const resetSignals = () => {
@@ -70,5 +71,39 @@ describe("ComposerInput", () => {
     expect(bulkCsvTextSignal.value).toBe("id,text\nintro,Hello");
     expect(bulkRowsSignal.value).toEqual([{ rowIndex: 1, id: "intro", text: "Hello" }]);
     expect(bulkParseErrorSignal.value).toBeNull();
+  });
+
+  it("renders a clean paste input after switching away from imported CSV state", () => {
+    modeSignal.value = "bulk";
+    bulkInputSourceSignal.value = "import";
+    bulkFileNameSignal.value = "clips.csv";
+    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello world" }];
+    bulkParseErrorSignal.value = "Old import warning";
+
+    setBulkInputSource("paste");
+    render(<ComposerInput />);
+
+    expect(screen.getByPlaceholderText("Paste CSV rows with id,text columns...")).toBeTruthy();
+    expect(screen.getByText("0 rows loaded")).toBeTruthy();
+    expect(screen.queryByText("clips.csv")).toBeNull();
+    expect(screen.queryByText("Old import warning")).toBeNull();
+  });
+
+  it("renders a clean import dropzone after switching away from pasted CSV state", () => {
+    modeSignal.value = "bulk";
+    bulkInputSourceSignal.value = "paste";
+    bulkCsvTextSignal.value = "id,text\nintro,Hello world";
+    bulkFileNameSignal.value = "Pasted CSV";
+    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello world" }];
+    bulkParseErrorSignal.value = "Old paste warning";
+
+    setBulkInputSource("import");
+    render(<ComposerInput />);
+
+    expect(screen.getByText("Drop CSV file here")).toBeTruthy();
+    expect(screen.getByText("No file selected")).toBeTruthy();
+    expect(screen.getByText("0 rows loaded")).toBeTruthy();
+    expect(screen.queryByText("Pasted CSV")).toBeNull();
+    expect(screen.queryByText("Old paste warning")).toBeNull();
   });
 });
