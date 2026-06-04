@@ -17,10 +17,15 @@ type NavigatorWithGpu = Navigator & {
   gpu?: unknown;
 };
 
-export function ComposerSettingsDropdown() {
+type ComposerSettingsDropdownProps = {
+  disabled?: boolean;
+};
+
+export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [hasWebGpu, setHasWebGpu] = useState(false);
-  const isOpen = settingsOpenSignal.value;
+  const isDisabled = disabled;
+  const isOpen = settingsOpenSignal.value && !isDisabled;
   const isBulk = modeSignal.value === "bulk";
   const isImportCsv = bulkInputSourceSignal.value === "import";
 
@@ -31,6 +36,12 @@ export function ComposerSettingsDropdown() {
       deviceSignal.value = "wasm";
     }
   }, []);
+
+  useEffect(() => {
+    if (isDisabled && settingsOpenSignal.value) {
+      settingsOpenSignal.value = false;
+    }
+  }, [isDisabled]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -63,7 +74,9 @@ export function ComposerSettingsDropdown() {
         className="composer-select-button"
         aria-expanded={isOpen}
         aria-controls="composer-settings-dropdown"
+        disabled={isDisabled}
         onClick={() => {
+          if (isDisabled) return;
           settingsOpenSignal.value = !settingsOpenSignal.value;
         }}
       >

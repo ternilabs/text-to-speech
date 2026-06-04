@@ -176,6 +176,22 @@ describe("ComposerSettingsDropdown", () => {
     expect(settingsOpenSignal.value).toBe(true);
     expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
   });
+
+  it("disables and closes settings while the model is loading", () => {
+    settingsOpenSignal.value = true;
+
+    render(<ComposerSettingsDropdown disabled />);
+
+    const settingsButton = screen.getByRole("button", { name: "Settings" });
+
+    expect(settingsButton).toHaveProperty("disabled", true);
+    expect(settingsOpenSignal.value).toBe(false);
+    expect(screen.queryByText("Generation settings")).toBeNull();
+
+    fireEvent.click(settingsButton);
+
+    expect(settingsOpenSignal.value).toBe(false);
+  });
 });
 
 describe("ModelDropdown", () => {
@@ -185,5 +201,11 @@ describe("ModelDropdown", () => {
     expect(screen.getByRole("option", { name: "Model: Kokoro" })).toHaveProperty("disabled", false);
     expect(screen.getByRole("option", { name: "Model: Pollinations - coming soon" })).toHaveProperty("disabled", true);
     expect(screen.queryByRole("option", { name: "Heart · en-us" })).toBeNull();
+  });
+
+  it("disables model selection while the model is loading", () => {
+    render(<ModelDropdown disabled />);
+
+    expect(screen.getByLabelText("Model")).toHaveProperty("disabled", true);
   });
 });
