@@ -84,6 +84,7 @@ export function App() {
       <StatusRows
         mode={modeSignal.value}
         status={mergedError ? "error" : statusSignal.value}
+        progress={bulkExport.progress}
       />
       {isReady ? <AudioCard result={singleAudioResultSignal.value!} /> : null}
     </AppShell>

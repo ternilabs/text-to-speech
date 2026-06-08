@@ -3,13 +3,18 @@ import { ChevronDown, Settings } from "preact-feather";
 import { VOICE_OPTIONS } from "../../tts/constants";
 import { setBulkInputSource } from "../csvInput";
 import {
+  bulkCsvTextSignal,
+  bulkFileNameSignal,
   bulkInputSourceSignal,
+  bulkParseErrorSignal,
+  bulkRowsSignal,
   deviceSignal,
   modeSignal,
   outputFormatSignal,
   selectedVoiceSignal,
   settingsOpenSignal,
   speedSignal,
+  textSignal,
 } from "../../tts/signals";
 import type { DeviceOption, OutputFormat } from "../../tts/types";
 
@@ -100,6 +105,12 @@ export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsD
 
   const selectMode = (value: string) => {
     modeSignal.value = value as "single" | "bulk";
+    // Reset input signals when switching modes
+    textSignal.value = "";
+    bulkCsvTextSignal.value = "";
+    bulkRowsSignal.value = [];
+    bulkFileNameSignal.value = "";
+    bulkParseErrorSignal.value = null;
     setOpenMenu(null);
   };
 
