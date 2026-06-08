@@ -1,23 +1,71 @@
+import { useEffect, useRef, useState } from "preact/hooks";
+import { ChevronDown } from "preact-feather";
+
 type ModelDropdownProps = {
   disabled?: boolean;
 };
 
 export function ModelDropdown({ disabled = false }: ModelDropdownProps) {
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (target && anchorRef.current?.contains(target)) return;
+      setIsOpen(false);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
   return (
-    <label className="sr-only-wrapper" htmlFor="composer-model-select">
-      <span className="sr-only">Model</span>
-      <select
-        id="composer-model-select"
-        className="composer-model-select"
-        value="kokoro"
+    <div className="model-anchor" ref={anchorRef}>
+      <button
+        type="button"
+        className={`model-button${isOpen ? " open" : ""}`}
+        aria-expanded={isOpen}
+        aria-controls="model-menu"
+        aria-label="Select model"
         disabled={disabled}
-        onChange={() => undefined}
+        onClick={() => {
+          if (!disabled) setIsOpen(prev => !prev);
+        }}
       >
-        <option value="kokoro">Model: Kokoro</option>
-        <option value="pollinations" disabled>
-          Model: Pollinations - coming soon
-        </option>
-      </select>
-    </label>
+        <span className="model-button-label">
+          <span className="model-dot" aria-hidden="true" />
+          <span>Kokoro</span>
+        </span>
+        <ChevronDown size={13} strokeWidth={2} />
+      </button>
+      <div id="model-menu" className={`model-menu${isOpen ? " open" : ""}`} role="listbox" aria-label="Model selector">
+        <button type="button" className="model-option selected" role="option" aria-selected="true" onClick={() => setIsOpen(false)}>
+          <span className="model-check">{"\u2713"}</span>
+          <span>
+            <span className="model-title">Kokoro</span>
+            <span className="model-desc">Local default synthesis model.</span>
+          </span>
+        </button>
+        <button type="button" className="model-option" role="option" aria-selected="false" disabled>
+          <span className="model-check" />
+          <span>
+            <span className="model-title">Pollinations</span>
+            <span className="model-desc">Coming soon — not implemented in the current source scope.</span>
+          </span>
+        </button>
+      </div>
+    </div>
   );
 }

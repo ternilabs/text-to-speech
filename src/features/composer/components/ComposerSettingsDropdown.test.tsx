@@ -15,6 +15,7 @@ import {
 } from "../../tts/signals";
 import { TTS_SETTINGS_STORAGE_KEY } from "../../tts/settingsStorage";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
+import { ModelDropdown } from "./ModelDropdown";
 
 const resetSignals = () => {
   modeSignal.value = "single";
@@ -162,5 +163,32 @@ describe("ComposerSettingsDropdown", () => {
     fireEvent.click(screen.getByRole("button", { name: "Paste rows" }));
 
     expect(bulkInputSourceSignal.value).toBe("paste");
+  });
+});
+
+describe("ModelDropdown", () => {
+  it("shows Kokoro selected and Pollinations disabled", () => {
+    render(<ModelDropdown />);
+
+    expect(screen.getAllByText("Kokoro").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("Local default synthesis model.")).toBeTruthy();
+    expect(screen.getByText("Pollinations")).toBeTruthy();
+    expect(screen.getAllByText(/Coming soon/).length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("opens model menu on button click", () => {
+    render(<ModelDropdown />);
+
+    const btn = screen.getByRole("button", { name: "Select model" });
+    fireEvent.click(btn);
+
+    expect(btn.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("disables model button while loading", () => {
+    render(<ModelDropdown disabled />);
+
+    const btn = screen.getByRole("button", { name: "Select model" });
+    expect(btn).toHaveProperty("disabled", true);
   });
 });
