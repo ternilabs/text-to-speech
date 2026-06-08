@@ -141,6 +141,11 @@ export function useBulkExport(): {
               device: input.device,
               speed: input.speed,
             });
+
+            if (signal.aborted) {
+              throw new Error("bulk-cancelled");
+            }
+
             const wavBuffer = encodeWav(audio);
 
             if (signal.aborted) {

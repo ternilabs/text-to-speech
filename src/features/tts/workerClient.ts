@@ -146,6 +146,10 @@ export function createTtsWorkerClient(options: TtsWorkerClientOptions = {}) {
       }
 
       post(worker, { type: "cancel", jobId: activeJobId });
+      if (pendingGeneration?.jobId === activeJobId) {
+        pendingGeneration.reject(new Error("Generation cancelled"));
+        pendingGeneration = null;
+      }
     },
 
     dispose() {

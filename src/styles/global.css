@@ -1130,6 +1130,8 @@ textarea:focus-visible {
   font-size: 13px;
   color: var(--color-dusk-gray);
   padding: 4px 2px;
+  width: min(100% - 32px, 600px);
+  justify-self: center;
 }
 .gen-row.show { display: flex; }
 .model-loading {
@@ -1139,6 +1141,8 @@ textarea:focus-visible {
   font-size: 13px;
   color: var(--color-dusk-gray);
   padding: 4px 2px;
+  width: min(100% - 32px, 600px);
+  justify-self: center;
 }
 .model-loading.show { display: flex; }
 .error-row {
@@ -1148,6 +1152,8 @@ textarea:focus-visible {
   font-size: 13px;
   color: var(--error);
   padding: 4px 2px;
+  width: min(100% - 32px, 600px);
+  justify-self: center;
 }
 .error-row.show { display: flex; }
 .warning-row {
@@ -1157,6 +1163,8 @@ textarea:focus-visible {
   font-size: 13px;
   color: var(--warning);
   padding: 4px 2px;
+  width: min(100% - 32px, 600px);
+  justify-self: center;
 }
 .warning-row.show { display: flex; }
 .error-mark {

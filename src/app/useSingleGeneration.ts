@@ -70,6 +70,7 @@ export function useSingleGeneration(): {
   const loadPromiseRef = useRef<Promise<void> | null>(null);
   const loadingDeviceRef = useRef<typeof deviceSignal.value | null>(null);
   const loadedDeviceRef = useRef<typeof deviceSignal.value | null>(null);
+  const cancelledRef = useRef(false);
   const isModelLoading = statusSignal.value === "loading-model";
   const isGenerating = isModelLoading || statusSignal.value === "generating";
   const canGenerate = textSignal.value.trim().length > 0 && !isGenerating;
@@ -158,6 +159,7 @@ export function useSingleGeneration(): {
       return;
     }
 
+    cancelledRef.current = false;
     appWarningsSignal.value = [];
     appErrorSignal.value = null;
     statusSignal.value = "loading-model";
@@ -175,6 +177,13 @@ export function useSingleGeneration(): {
         device: deviceSignal.value,
         speed: speedSignal.value,
       });
+
+      if (cancelledRef.current) {
+        statusSignal.value = "cancelled";
+        statusMessageSignal.value = "Generation cancelled.";
+        return;
+      }
+
       const wavBuffer = encodeWav(audio);
 
       if (outputFormatSignal.value === "mp3") {
@@ -193,6 +202,12 @@ export function useSingleGeneration(): {
       statusSignal.value = "ready";
       statusMessageSignal.value = "Audio ready.";
     } catch (error) {
+      if (cancelledRef.current) {
+        statusSignal.value = "cancelled";
+        statusMessageSignal.value = "Generation cancelled.";
+        return;
+      }
+
       statusSignal.value = "error";
       appErrorSignal.value = error instanceof Error ? error.message : "Unable to generate audio.";
       statusMessageSignal.value = "Generation failed.";
@@ -200,6 +215,7 @@ export function useSingleGeneration(): {
   };
 
   const cancel = () => {
+    cancelledRef.current = true;
     workerClientRef.current?.cancel();
     statusSignal.value = "cancelled";
     statusMessageSignal.value = "Generation cancelled.";

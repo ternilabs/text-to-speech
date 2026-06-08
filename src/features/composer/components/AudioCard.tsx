@@ -20,9 +20,13 @@ export function AudioCard({ result }: AudioCardProps) {
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
     setIsPlaying(false);
     setCurrentTime(0);
-    setDuration(0);
   }, [result.url]);
 
   const togglePlayback = async () => {
