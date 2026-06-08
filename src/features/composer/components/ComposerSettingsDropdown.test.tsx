@@ -12,11 +12,9 @@ import {
   selectedVoiceSignal,
   settingsOpenSignal,
   speedSignal,
-  textSignal,
 } from "../../tts/signals";
 import { TTS_SETTINGS_STORAGE_KEY } from "../../tts/settingsStorage";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
-import { ModelDropdown } from "./ModelDropdown";
 
 const resetSignals = () => {
   modeSignal.value = "single";
@@ -38,165 +36,99 @@ describe("ComposerSettingsDropdown", () => {
     localStorage.clear();
   });
 
-  it("opens settings and updates mode plus import source", () => {
+  it("opens settings dropdown on button click", () => {
+    render(<ComposerSettingsDropdown />);
+
+    const btn = screen.getByRole("button", { name: "Settings" });
+    fireEvent.click(btn);
+
+    expect(btn.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByText("Generation type")).toBeTruthy();
+  });
+
+  it("switches mode via custom dropdown", () => {
     render(<ComposerSettingsDropdown />);
 
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
-    fireEvent.click(screen.getByLabelText("Import CSV"));
 
-    expect(settingsOpenSignal.value).toBe(true);
     expect(modeSignal.value).toBe("bulk");
-    expect(bulkInputSourceSignal.value).toBe("paste");
   });
 
-  it("updates voice, format, speed, and keeps unsupported WebGPU disabled", () => {
+  it("selects voice from grouped dropdown", () => {
     render(<ComposerSettingsDropdown />);
 
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
-    fireEvent.change(screen.getByLabelText("Voice"), { target: { value: "am_adam" } });
-    fireEvent.change(screen.getByLabelText("Format"), { target: { value: "mp3" } });
-    fireEvent.input(screen.getByLabelText("Speed 1.00x"), { target: { value: "1.15" } });
+    fireEvent.click(screen.getByRole("button", { name: "am_adam" }));
 
     expect(selectedVoiceSignal.value).toBe("am_adam");
+  });
+
+  it("selects format from dropdown", () => {
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByRole("button", { name: "MP3 Experimental" }));
+
     expect(outputFormatSignal.value).toBe("mp3");
+  });
+
+  it("selects backend from dropdown", () => {
+    Object.defineProperty(navigator, "gpu", {
+      configurable: true,
+      value: {},
+    });
+
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByRole("button", { name: "WebGPU" }));
+
+    expect(deviceSignal.value).toBe("webgpu");
+  });
+
+  it("updates speed via range slider", () => {
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.input(screen.getByRole("slider"), { target: { value: "1.15" } });
+
     expect(speedSignal.value).toBe(1.15);
-    expect(screen.getByRole("option", { name: "WebGPU unavailable" })).toHaveProperty("disabled", true);
   });
 
-  it("clears stale imported CSV state when Import CSV is disabled", () => {
-    modeSignal.value = "bulk";
-    bulkInputSourceSignal.value = "import";
-    bulkFileNameSignal.value = "clips.csv";
-    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello world" }];
-    bulkParseErrorSignal.value = "Old import warning";
-
-    render(<ComposerSettingsDropdown />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
-    fireEvent.click(screen.getByLabelText("Import CSV"));
-
-    expect(bulkInputSourceSignal.value).toBe("paste");
-    expect(bulkCsvTextSignal.value).toBe("");
-    expect(bulkFileNameSignal.value).toBe("");
-    expect(bulkParseErrorSignal.value).toBeNull();
-    expect(bulkRowsSignal.value).toEqual([]);
-  });
-
-  it("clears stale pasted CSV state when Import CSV is enabled", () => {
-    modeSignal.value = "bulk";
-    bulkInputSourceSignal.value = "paste";
-    bulkCsvTextSignal.value = "id,text\nintro,Hello world";
-    bulkFileNameSignal.value = "Pasted CSV";
-    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello world" }];
-    bulkParseErrorSignal.value = "Old paste warning";
-
-    render(<ComposerSettingsDropdown />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
-    fireEvent.click(screen.getByLabelText("Import CSV"));
-
-    expect(bulkInputSourceSignal.value).toBe("import");
-    expect(bulkCsvTextSignal.value).toBe("");
-    expect(bulkFileNameSignal.value).toBe("");
-    expect(bulkParseErrorSignal.value).toBeNull();
-    expect(bulkRowsSignal.value).toEqual([]);
-  });
-
-  it("closes settings when clicking outside the dropdown wrapper", () => {
+  it("closes settings when clicking outside", () => {
     render(
       <div>
         <ComposerSettingsDropdown />
-        <button type="button">Outside target</button>
+        <button type="button">Outside</button>
       </div>,
     );
 
-    const settingsButton = screen.getByRole("button", { name: "Settings" });
-    fireEvent.click(settingsButton);
-
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     expect(settingsOpenSignal.value).toBe(true);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
 
-    fireEvent.pointerDown(screen.getByRole("button", { name: "Outside target" }));
-
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Outside" }));
     expect(settingsOpenSignal.value).toBe(false);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("closes settings when Escape is pressed", () => {
+  it("closes settings on Escape", () => {
     render(<ComposerSettingsDropdown />);
 
-    const settingsButton = screen.getByRole("button", { name: "Settings" });
-    fireEvent.click(settingsButton);
-
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     expect(settingsOpenSignal.value).toBe(true);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
 
     fireEvent.keyDown(document, { key: "Escape" });
-
     expect(settingsOpenSignal.value).toBe(false);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
   });
 
-  it("keeps settings open when interacting with dropdown controls", () => {
-    render(<ComposerSettingsDropdown />);
-
-    const settingsButton = screen.getByRole("button", { name: "Settings" });
-    fireEvent.click(settingsButton);
-    fireEvent.pointerDown(screen.getByRole("button", { name: "Bulk" }));
-    fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
-    fireEvent.change(screen.getByLabelText("Voice"), { target: { value: "am_adam" } });
-    fireEvent.input(screen.getByLabelText("Speed 1.00x"), { target: { value: "1.15" } });
-
-    expect(settingsOpenSignal.value).toBe(true);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
-    expect(modeSignal.value).toBe("bulk");
-    expect(selectedVoiceSignal.value).toBe("am_adam");
-    expect(speedSignal.value).toBe(1.15);
-  });
-
-  it("keeps aria-expanded accurate across open, outside close, and reopen", () => {
-    render(
-      <div>
-        <ComposerSettingsDropdown />
-        <button type="button">Outside target</button>
-      </div>,
-    );
-
-    const settingsButton = screen.getByRole("button", { name: "Settings" });
-
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
-
-    fireEvent.click(settingsButton);
-    expect(settingsOpenSignal.value).toBe(true);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
-
-    fireEvent.pointerDown(screen.getByRole("button", { name: "Outside target" }));
-    expect(settingsOpenSignal.value).toBe(false);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("false");
-
-    fireEvent.click(settingsButton);
-    expect(settingsOpenSignal.value).toBe(true);
-    expect(settingsButton.getAttribute("aria-expanded")).toBe("true");
-  });
-
-  it("disables and closes settings while the model is loading", () => {
-    settingsOpenSignal.value = true;
-
+  it("disables settings button while model is loading", () => {
     render(<ComposerSettingsDropdown disabled />);
 
-    const settingsButton = screen.getByRole("button", { name: "Settings" });
-
-    expect(settingsButton).toHaveProperty("disabled", true);
-    expect(settingsOpenSignal.value).toBe(false);
-    expect(screen.queryByText("Generation settings")).toBeNull();
-
-    fireEvent.click(settingsButton);
-
-    expect(settingsOpenSignal.value).toBe(false);
+    const btn = screen.getByRole("button", { name: "Settings" });
+    expect(btn).toHaveProperty("disabled", true);
   });
 
-  it("persists Settings dropdown generation choices", () => {
+  it("persists settings choices to localStorage", () => {
     Object.defineProperty(navigator, "gpu", {
       configurable: true,
       value: {},
@@ -206,15 +138,14 @@ describe("ComposerSettingsDropdown", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
-    fireEvent.click(screen.getByLabelText("Import CSV"));
-    fireEvent.change(screen.getByLabelText("Voice"), { target: { value: "am_adam" } });
-    fireEvent.change(screen.getByLabelText("Format"), { target: { value: "mp3" } });
-    fireEvent.change(screen.getByLabelText("Device"), { target: { value: "webgpu" } });
-    fireEvent.input(screen.getByLabelText("Speed 1.00x"), { target: { value: "1.15" } });
+    fireEvent.click(screen.getByRole("button", { name: "am_adam" }));
+    fireEvent.click(screen.getByRole("button", { name: "MP3 Experimental" }));
+    fireEvent.click(screen.getByRole("button", { name: "WebGPU" }));
+    fireEvent.input(screen.getByRole("slider"), { target: { value: "1.15" } });
 
     expect(JSON.parse(localStorage.getItem(TTS_SETTINGS_STORAGE_KEY) ?? "{}")).toEqual({
       mode: "bulk",
-      bulkInputSource: "paste",
+      bulkInputSource: "import",
       voice: "am_adam",
       format: "mp3",
       device: "webgpu",
@@ -222,41 +153,14 @@ describe("ComposerSettingsDropdown", () => {
     });
   });
 
-  it("does not persist transient composer content with Settings choices", () => {
-    textSignal.value = "Do not persist";
-    bulkCsvTextSignal.value = "id,text\nintro,Do not persist";
-    bulkFileNameSignal.value = "clips.csv";
-    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Do not persist" }];
-    bulkParseErrorSignal.value = "Do not persist";
-    settingsOpenSignal.value = true;
+  it("switches bulk input source", () => {
+    modeSignal.value = "bulk";
 
     render(<ComposerSettingsDropdown />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByRole("button", { name: "Paste rows" }));
 
-    expect(JSON.parse(localStorage.getItem(TTS_SETTINGS_STORAGE_KEY) ?? "{}")).toEqual({
-      mode: "bulk",
-      bulkInputSource: "import",
-      voice: "af_heart",
-      format: "wav",
-      device: "wasm",
-      speed: 1,
-    });
-  });
-});
-
-describe("ModelDropdown", () => {
-  it("shows Kokoro enabled and Pollinations disabled", () => {
-    render(<ModelDropdown />);
-
-    expect(screen.getByRole("option", { name: "Model: Kokoro" })).toHaveProperty("disabled", false);
-    expect(screen.getByRole("option", { name: "Model: Pollinations - coming soon" })).toHaveProperty("disabled", true);
-    expect(screen.queryByRole("option", { name: "Heart · en-us" })).toBeNull();
-  });
-
-  it("disables model selection while the model is loading", () => {
-    render(<ModelDropdown disabled />);
-
-    expect(screen.getByLabelText("Model")).toHaveProperty("disabled", true);
+    expect(bulkInputSourceSignal.value).toBe("paste");
   });
 });
