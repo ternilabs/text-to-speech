@@ -12,11 +12,9 @@ import {
 import { setBulkInputSource } from "../csvInput";
 import { ComposerInput } from "./ComposerInput";
 
-const CSV_FORMAT_NOTE_TEXT = 'CSV format: id,text · Example: intro,"Hello from TerniLabs"';
-
 const queryCsvFormatNote = () =>
   screen.queryByText((_, element) =>
-    Boolean(element?.classList.contains("composer-help-note") && element.textContent === CSV_FORMAT_NOTE_TEXT),
+    Boolean(element?.classList.contains("bulk-toolbar-note") && element.textContent?.includes("CSV format")),
   );
 
 const resetSignals = () => {
@@ -37,10 +35,31 @@ describe("ComposerInput", () => {
   it("renders the single text workspace and updates textSignal", () => {
     render(<ComposerInput />);
 
-    const input = screen.getByPlaceholderText("Enter text to speak...") as HTMLTextAreaElement;
+    const input = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
     fireEvent.input(input, { target: { value: "Hello from composer" } });
 
     expect(textSignal.value).toBe("Hello from composer");
+  });
+
+  it("shows word count and enforces 500 word limit in single mode", () => {
+    render(<ComposerInput />);
+
+    const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
+    const words = Array.from({ length: 5 }, () => "word").join(" ");
+    fireEvent.input(textarea, { target: { value: words } });
+
+    expect(screen.getByText("5 / 500")).toBeTruthy();
+  });
+
+  it("truncates input at 500 words", () => {
+    render(<ComposerInput />);
+
+    const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
+    const manyWords = Array.from({ length: 510 }, (_, i) => `word${i}`).join(" ");
+    fireEvent.input(textarea, { target: { value: manyWords } });
+
+    expect(textSignal.value.split(/\s+/).filter(Boolean).length).toBeLessThanOrEqual(500);
+    expect(screen.getByText("500 / 500")).toBeTruthy();
   });
 
   it("renders CSV import by default in bulk mode", () => {
@@ -48,9 +67,8 @@ describe("ComposerInput", () => {
 
     render(<ComposerInput />);
 
-    expect(screen.getByText("Drop CSV file here")).toBeTruthy();
-    expect(screen.getByText("No CSV loaded yet")).toBeTruthy();
-    expect(screen.getByText("0 rows loaded")).toBeTruthy();
+    expect(screen.getByText((content) => content.includes("Drop a CSV file here"))).toBeTruthy();
+    expect(screen.getByText("0 / 50 rows")).toBeTruthy();
   });
 
   it("shows CSV format guidance in bulk import mode", () => {
@@ -80,7 +98,6 @@ describe("ComposerInput", () => {
 
     expect(queryCsvFormatNote()).toBeNull();
     expect(screen.queryByText("id,text")).toBeNull();
-    expect(screen.queryByText('intro,"Hello from TerniLabs"')).toBeNull();
   });
 
   it("shows imported CSV summary state", () => {
@@ -91,20 +108,8 @@ describe("ComposerInput", () => {
 
     render(<ComposerInput />);
 
-    expect(screen.getByText("clips.csv")).toBeTruthy();
-    expect(screen.getByText("1 row loaded")).toBeTruthy();
     expect(screen.getByText("CSV warning")).toBeTruthy();
-  });
-
-  it("uses singular row-count copy for one imported row", () => {
-    modeSignal.value = "bulk";
-    bulkFileNameSignal.value = "clips.csv";
-    bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello" }];
-
-    render(<ComposerInput />);
-
-    expect(screen.getByText("clips.csv")).toBeTruthy();
-    expect(screen.getByText("1 row loaded")).toBeTruthy();
+    expect(screen.getByText("1 / 50 rows")).toBeTruthy();
   });
 
   it("renders pasted CSV input when import is disabled", () => {
@@ -132,7 +137,7 @@ describe("ComposerInput", () => {
     render(<ComposerInput />);
 
     expect(screen.getByPlaceholderText("Paste CSV rows with id,text columns...")).toBeTruthy();
-    expect(screen.getByText("0 rows loaded")).toBeTruthy();
+    expect(screen.getByText("0 / 50 rows")).toBeTruthy();
     expect(screen.queryByText("clips.csv")).toBeNull();
     expect(screen.queryByText("Old import warning")).toBeNull();
   });
@@ -148,9 +153,8 @@ describe("ComposerInput", () => {
     setBulkInputSource("import");
     render(<ComposerInput />);
 
-    expect(screen.getByText("Drop CSV file here")).toBeTruthy();
-    expect(screen.getByText("No CSV loaded yet")).toBeTruthy();
-    expect(screen.getByText("0 rows loaded")).toBeTruthy();
+    expect(screen.getByText((content) => content.includes("Drop a CSV file here"))).toBeTruthy();
+    expect(screen.getByText("0 / 50 rows")).toBeTruthy();
     expect(screen.queryByText("Pasted CSV")).toBeNull();
     expect(screen.queryByText("Old paste warning")).toBeNull();
   });
