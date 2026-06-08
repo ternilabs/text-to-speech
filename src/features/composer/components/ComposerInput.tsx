@@ -42,8 +42,6 @@ function BulkCsvFormatNote() {
   );
 }
 
-const formatLoadedRows = (rowCount: number) => `${rowCount} ${rowCount === 1 ? "row" : "rows"} loaded`;
-
 export function ComposerInput() {
   const [isDragActive, setIsDragActive] = useState(false);
   const isBulkMode = modeSignal.value === "bulk";
