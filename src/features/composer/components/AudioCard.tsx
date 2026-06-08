@@ -13,8 +13,6 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${remaining}`;
 };
 
-const WAVEFORM_BARS = [6, 10, 15, 21, 26, 19, 13, 8, 14, 22, 28, 20, 13, 8, 14, 22, 18, 12, 8, 14, 20, 25, 17, 11, 6];
-
 export function AudioCard({ result }: AudioCardProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -91,12 +89,6 @@ export function AudioCard({ result }: AudioCardProps) {
           <div className="track-meta">
             Kokoro · {result.format.toUpperCase()} · {result.voice} · {result.device.toUpperCase()} · {result.speed.toFixed(2)}x
           </div>
-        </div>
-
-        <div className="waveform" aria-hidden="true">
-          {WAVEFORM_BARS.map((h, i) => (
-            <div key={i} className={`bar${i < 4 ? " lit" : ""}`} style={{ height: `${h}px` }} />
-          ))}
         </div>
 
         <div className="timer">{formatTime(currentTime)} / {formatTime(duration)}</div>

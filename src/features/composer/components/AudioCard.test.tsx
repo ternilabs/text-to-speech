@@ -30,13 +30,6 @@ describe("AudioCard", () => {
     expect(download.getAttribute("download")).toBe("ter-clip.wav");
   });
 
-  it("renders waveform bars", () => {
-    render(<AudioCard result={result} />);
-
-    const bars = document.querySelectorAll(".waveform .bar");
-    expect(bars.length).toBe(25);
-  });
-
   it("shows MP3 format tag for mp3 results", () => {
     const mp3Result = { ...result, format: "mp3" as const };
     render(<AudioCard result={mp3Result} />);
