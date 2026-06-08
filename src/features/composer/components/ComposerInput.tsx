@@ -4,7 +4,6 @@ import {
   bulkCsvTextSignal,
   bulkFileNameSignal,
   bulkInputSourceSignal,
-  bulkParseErrorSignal,
   bulkRowsSignal,
   modeSignal,
   textSignal,
@@ -23,14 +22,11 @@ const limitWords = (value: string, maxWords: number) => {
 };
 
 const readCsvFile = async (file: File) => {
-  bulkParseErrorSignal.value = null;
-
   try {
     applyBulkCsvFileText(file.name, await file.text());
   } catch {
     bulkRowsSignal.value = [];
     bulkFileNameSignal.value = file.name;
-    bulkParseErrorSignal.value = "Failed to read CSV. Please check the file and try again.";
   }
 };
 
@@ -42,7 +38,11 @@ function BulkCsvFormatNote() {
   );
 }
 
-export function ComposerInput() {
+type ComposerInputProps = {
+  isBusy: boolean;
+};
+
+export function ComposerInput({ isBusy }: ComposerInputProps) {
   const [isDragActive, setIsDragActive] = useState(false);
   const isBulkMode = modeSignal.value === "bulk";
   const isImportMode = bulkInputSourceSignal.value === "import";
@@ -58,6 +58,7 @@ export function ComposerInput() {
           value={textSignal.value}
           placeholder="Enter text to convert to speech..."
           rows={6}
+          disabled={isBusy}
           onInput={(event) => {
             const raw = (event.currentTarget as HTMLTextAreaElement).value;
             const limited = limitWords(raw, MAX_WORDS);
@@ -84,6 +85,7 @@ export function ComposerInput() {
           value={bulkCsvTextSignal.value}
           placeholder="Paste CSV rows with id,text columns..."
           rows={6}
+          disabled={isBusy}
           onInput={(event) => {
             applyBulkCsvText((event.currentTarget as HTMLTextAreaElement).value);
           }}
@@ -92,7 +94,6 @@ export function ComposerInput() {
           <BulkCsvFormatNote />
           <span className="char-count">{rowCount} / 50 rows</span>
         </div>
-        {bulkParseErrorSignal.value ? <div className="error-text">{bulkParseErrorSignal.value}</div> : null}
       </section>
     );
   }
@@ -124,8 +125,9 @@ export function ComposerInput() {
       }}
     >
       <div
-        className={`upload-zone${isDragActive ? " composer-dropzone--active" : ""}`}
+        className={`upload-zone${isDragActive ? " composer-dropzone--active" : ""}${isBusy ? " control-disabled" : ""}`}
         onClick={() => {
+          if (isBusy) return;
           const input = document.createElement("input");
           input.type = "file";
           input.accept = ".csv,text/csv";
@@ -137,14 +139,19 @@ export function ComposerInput() {
         }}
       >
         <Upload size={22} strokeWidth={1.5} />
-        <div className="uz-label">Drop a CSV file here, or click to browse</div>
-        <div className="uz-sub">Drag and drop a CSV file, or choose a file from your device.</div>
+        {rowCount > 0 ? (
+          <>
+            <div className="uz-label">You have selected filename {bulkFileNameSignal.value}</div>
+            <div className="uz-sub">Drag and drop a CSV file, or choose another file from your device.</div>
+          </>
+        ) : (
+          <div className="uz-label">Drop a CSV file here, or click to browse</div>
+        )}
       </div>
       <div className="bulk-meta-row">
         <BulkCsvFormatNote />
         <span className="char-count">{rowCount} / 50 rows</span>
       </div>
-      {bulkParseErrorSignal.value ? <div className="error-text">{bulkParseErrorSignal.value}</div> : null}
     </section>
   );
 }

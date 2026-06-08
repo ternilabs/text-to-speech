@@ -24,7 +24,7 @@ export function ComposerCard({
 }: ComposerCardProps) {
   return (
     <section className="composer-card" aria-label="Text to speech composer">
-      <ComposerInput />
+      <ComposerInput isBusy={isBusy} />
       <div className="divider" />
       <div className={`toolbar${isBusy ? " preview-disabled" : ""}`}>
         <ComposerSettingsDropdown disabled={isModelLoading} />

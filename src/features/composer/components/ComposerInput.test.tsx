@@ -33,7 +33,7 @@ describe("ComposerInput", () => {
   });
 
   it("renders the single text workspace and updates textSignal", () => {
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     const input = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
     fireEvent.input(input, { target: { value: "Hello from composer" } });
@@ -42,7 +42,7 @@ describe("ComposerInput", () => {
   });
 
   it("shows word count and enforces 500 word limit in single mode", () => {
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
     const words = Array.from({ length: 5 }, () => "word").join(" ");
@@ -52,7 +52,7 @@ describe("ComposerInput", () => {
   });
 
   it("truncates input at 500 words", () => {
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
     const manyWords = Array.from({ length: 510 }, (_, i) => `word${i}`).join(" ");
@@ -65,7 +65,7 @@ describe("ComposerInput", () => {
   it("renders CSV import by default in bulk mode", () => {
     modeSignal.value = "bulk";
 
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     expect(screen.getByText((content) => content.includes("Drop a CSV file here"))).toBeTruthy();
     expect(screen.getByText("0 / 50 rows")).toBeTruthy();
@@ -75,7 +75,7 @@ describe("ComposerInput", () => {
     modeSignal.value = "bulk";
     bulkInputSourceSignal.value = "import";
 
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     expect(queryCsvFormatNote()).toBeTruthy();
     expect(screen.getByText("id,text")).toBeTruthy();
@@ -86,7 +86,7 @@ describe("ComposerInput", () => {
     modeSignal.value = "bulk";
     bulkInputSourceSignal.value = "paste";
 
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     expect(queryCsvFormatNote()).toBeTruthy();
     expect(screen.getByText("id,text")).toBeTruthy();
@@ -94,7 +94,7 @@ describe("ComposerInput", () => {
   });
 
   it("does not show CSV format guidance in single mode", () => {
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     expect(queryCsvFormatNote()).toBeNull();
     expect(screen.queryByText("id,text")).toBeNull();
@@ -106,9 +106,9 @@ describe("ComposerInput", () => {
     bulkRowsSignal.value = [{ rowIndex: 1, id: "intro", text: "Hello" }];
     bulkParseErrorSignal.value = "CSV warning";
 
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
-    expect(screen.getByText("CSV warning")).toBeTruthy();
+    expect(screen.getByText((content) => content.includes("You have selected filename clips.csv"))).toBeTruthy();
     expect(screen.getByText("1 / 50 rows")).toBeTruthy();
   });
 
@@ -116,7 +116,7 @@ describe("ComposerInput", () => {
     modeSignal.value = "bulk";
     bulkInputSourceSignal.value = "paste";
 
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     const input = screen.getByPlaceholderText("Paste CSV rows with id,text columns...") as HTMLTextAreaElement;
     fireEvent.input(input, { target: { value: "id,text\nintro,Hello" } });
@@ -134,7 +134,7 @@ describe("ComposerInput", () => {
     bulkParseErrorSignal.value = "Old import warning";
 
     setBulkInputSource("paste");
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     expect(screen.getByPlaceholderText("Paste CSV rows with id,text columns...")).toBeTruthy();
     expect(screen.getByText("0 / 50 rows")).toBeTruthy();
@@ -151,7 +151,7 @@ describe("ComposerInput", () => {
     bulkParseErrorSignal.value = "Old paste warning";
 
     setBulkInputSource("import");
-    render(<ComposerInput />);
+    render(<ComposerInput isBusy={false} />);
 
     expect(screen.getByText((content) => content.includes("Drop a CSV file here"))).toBeTruthy();
     expect(screen.getByText("0 / 50 rows")).toBeTruthy();
