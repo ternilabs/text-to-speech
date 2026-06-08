@@ -82,7 +82,7 @@ textarea:focus-visible {
 }
 
 .tts-card {
-  width: min(100% - 32px, 760px);
+  width: min(100% - 32px, 600px);
   box-sizing: border-box;
   display: grid;
   gap: 12px;
@@ -93,7 +93,7 @@ textarea:focus-visible {
 }
 
 .composer-card {
-  width: min(100% - 32px, 760px);
+  width: min(100% - 32px, 600px);
   box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--color-faded-stone) 26%, transparent);
   border-radius: 16px;
