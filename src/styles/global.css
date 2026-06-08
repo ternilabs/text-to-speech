@@ -57,18 +57,18 @@ textarea:focus-visible {
   box-sizing: border-box;
   display: grid;
   align-content: center;
-  justify-items: center;
-  gap: 32px;
+  gap: 8px;
   padding: 32px 24px 48px;
 }
 
 .brand-block {
   text-align: center;
+  justify-self: center;
 }
 
 .brand-block h1 {
   margin: 0;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   font-size: clamp(44px, 6vw, 52px);
   line-height: 1;
   font-weight: 400;
@@ -98,6 +98,8 @@ textarea:focus-visible {
   border-radius: 16px;
   background: var(--color-parchment);
   padding: 16px 20px;
+  justify-self: center;
+  margin-bottom: 8px;
 }
 
 .composer-input-zone {
@@ -927,6 +929,7 @@ textarea:focus-visible {
   cursor: not-allowed;
   opacity: 0.48;
   background: transparent;
+  box-shadow: none;
 }
 
 .setting-check {
@@ -1053,6 +1056,7 @@ textarea:focus-visible {
   opacity: 0.48;
   border: none;
   background: transparent;
+  box-shadow: none;
 }
 .model-check {
   color: var(--color-graphite);
@@ -1245,6 +1249,7 @@ textarea:focus-visible {
   padding: 16px 20px;
   width: min(100% - 32px, 600px);
   box-sizing: border-box;
+  justify-self: center;
 }
 .audio-card.hidden { display: none; }
 
@@ -1331,7 +1336,7 @@ textarea:focus-visible {
 .btn-dl:hover { background: #1a1813; }
 
 .control-disabled,
-.toolbar.preview-disabled .btn:not(.gen-btn),
+.toolbar.preview-disabled .btn:not(.gen-btn):not(.btn-cancel),
 .toolbar.preview-disabled .model-button,
 .toolbar.preview-disabled .setting-select-button,
 .toolbar.preview-disabled .upload-zone,
@@ -1340,7 +1345,7 @@ input:disabled {
   opacity: 0.52;
   cursor: not-allowed;
 }
-.toolbar.preview-disabled .btn:not(.gen-btn),
+.toolbar.preview-disabled .btn:not(.gen-btn):not(.btn-cancel),
 .toolbar.preview-disabled .model-button,
 .toolbar.preview-disabled .setting-select-button,
 .toolbar.preview-disabled .upload-zone {

@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/preact";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
+  appErrorSignal,
+  appWarningsSignal,
   bulkCsvTextSignal,
   bulkFileNameSignal,
   bulkInputSourceSignal,
@@ -11,7 +13,10 @@ import {
   outputFormatSignal,
   selectedVoiceSignal,
   settingsOpenSignal,
+  singleAudioResultSignal,
   speedSignal,
+  statusMessageSignal,
+  statusSignal,
 } from "../../tts/signals";
 import { TTS_SETTINGS_STORAGE_KEY } from "../../tts/settingsStorage";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
@@ -29,6 +34,11 @@ const resetSignals = () => {
   deviceSignal.value = "wasm";
   speedSignal.value = 1;
   settingsOpenSignal.value = false;
+  singleAudioResultSignal.value = null;
+  statusSignal.value = "idle";
+  statusMessageSignal.value = "Ready for local generation.";
+  appErrorSignal.value = null;
+  appWarningsSignal.value = [];
 };
 
 describe("ComposerSettingsDropdown", () => {
@@ -163,6 +173,26 @@ describe("ComposerSettingsDropdown", () => {
     fireEvent.click(screen.getByRole("button", { name: "Paste rows" }));
 
     expect(bulkInputSourceSignal.value).toBe("paste");
+  });
+
+  it("resets audio result and status when switching mode", () => {
+    singleAudioResultSignal.value = { url: "blob:test", filename: "test.wav", mimeType: "audio/wav", format: "wav", requestedFormat: "wav", voice: "af_heart", device: "wasm", speed: 1, warnings: [] };
+    statusSignal.value = "ready";
+    statusMessageSignal.value = "Audio ready.";
+    appErrorSignal.value = "some error";
+    appWarningsSignal.value = ["warning 1"];
+
+    render(<ComposerSettingsDropdown />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
+    fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
+
+    expect(modeSignal.value).toBe("bulk");
+    expect(singleAudioResultSignal.value).toBeNull();
+    expect(statusSignal.value).toBe("idle");
+    expect(statusMessageSignal.value).toBe("Ready for local generation.");
+    expect(appErrorSignal.value).toBeNull();
+    expect(appWarningsSignal.value).toEqual([]);
   });
 });
 

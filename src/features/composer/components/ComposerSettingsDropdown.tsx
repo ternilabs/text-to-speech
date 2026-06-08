@@ -3,6 +3,8 @@ import { ChevronDown, Settings } from "preact-feather";
 import { VOICE_OPTIONS } from "../../tts/constants";
 import { setBulkInputSource } from "../csvInput";
 import {
+  appErrorSignal,
+  appWarningsSignal,
   bulkCsvTextSignal,
   bulkFileNameSignal,
   bulkInputSourceSignal,
@@ -13,7 +15,10 @@ import {
   outputFormatSignal,
   selectedVoiceSignal,
   settingsOpenSignal,
+  singleAudioResultSignal,
   speedSignal,
+  statusMessageSignal,
+  statusSignal,
   textSignal,
 } from "../../tts/signals";
 import type { DeviceOption, OutputFormat } from "../../tts/types";
@@ -111,6 +116,11 @@ export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsD
     bulkRowsSignal.value = [];
     bulkFileNameSignal.value = "";
     bulkParseErrorSignal.value = null;
+    singleAudioResultSignal.value = null;
+    statusSignal.value = "idle";
+    statusMessageSignal.value = "Ready for local generation.";
+    appErrorSignal.value = null;
+    appWarningsSignal.value = [];
     setOpenMenu(null);
   };
 
