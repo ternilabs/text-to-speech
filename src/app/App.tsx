@@ -1,4 +1,4 @@
-import { ComposerCard, ComposerStatePanel } from "../features/composer";
+import { AudioCard, ComposerCard, StatusRows } from "../features/composer";
 import { useBulkExport } from "../features/bulk/useBulkExport";
 import {
   appErrorSignal,
@@ -16,13 +16,6 @@ import {
 import { AppShell } from "./AppShell";
 import { useSingleGeneration } from "./useSingleGeneration";
 
-const formatWarning = (warning: string) => {
-  if (warning === "mp3_failed_fallback_wav") {
-    return "MP3 failed validation. WAV fallback was used.";
-  }
-  return warning;
-};
-
 export function App() {
   const bulkExport = useBulkExport();
   const singleGeneration = useSingleGeneration();
@@ -31,21 +24,11 @@ export function App() {
   const isBusy = singleGeneration.isGenerating || bulkExport.isExporting;
   const canGenerateSingle = singleGeneration.canGenerate && !bulkExport.isExporting;
   const canGenerateBulk = bulkRowsSignal.value.length > 0 && !isBusy;
-  const mergedWarnings = [
-    ...appWarningsSignal.value,
-    ...bulkExport.warnings,
-    ...(singleAudioResultSignal.value?.warnings ?? []),
-  ];
-  const uniqueWarnings = Array.from(new Set(mergedWarnings.map(formatWarning)));
   const mergedError = appErrorSignal.value ?? bulkExport.error;
-  const statusMessage = bulkExport.isExporting
-    ? `Exporting zip (${bulkExport.progress.current}/${bulkExport.progress.total})`
-    : statusMessageSignal.value;
+  const isReady = statusSignal.value === "ready" && isSingleMode && singleAudioResultSignal.value;
 
   const handleBulkGenerate = async () => {
-    if (!canGenerateBulk) {
-      return;
-    }
+    if (!canGenerateBulk) return;
 
     appWarningsSignal.value = [];
     appErrorSignal.value = null;
@@ -98,15 +81,11 @@ export function App() {
         onGenerate={isSingleMode ? singleGeneration.generate : handleBulkGenerate}
         onCancel={handleCancel}
       />
-      <ComposerStatePanel
+      <StatusRows
         mode={modeSignal.value}
-        status={statusSignal.value}
-        message={statusMessage}
-        progress={bulkExport.isExporting ? bulkExport.progress : undefined}
-        warnings={uniqueWarnings}
-        error={mergedError}
-        result={singleAudioResultSignal.value}
+        status={mergedError ? "error" : statusSignal.value}
       />
+      {isReady ? <AudioCard result={singleAudioResultSignal.value!} /> : null}
     </AppShell>
   );
 }
