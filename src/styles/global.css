@@ -96,6 +96,7 @@ textarea:focus-visible {
   box-sizing: border-box;
   border-radius: 16px;
   background: var(--color-parchment);
+  padding: 16px 20px;
 }
 
 .composer-input-zone {
