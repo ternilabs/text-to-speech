@@ -28,6 +28,23 @@ describe("ComposerCard", () => {
     resetSignals();
   });
 
+  it("renders the divider between input and toolbar", () => {
+    render(
+      <ComposerCard
+        isSingleMode
+        isBusy={false}
+        isBulkExporting={false}
+        isModelLoading={false}
+        canGenerate
+        onGenerate={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+
+    expect(document.querySelector(".divider")).toBeTruthy();
+    expect(document.querySelector(".toolbar")).toBeTruthy();
+  });
+
   it("locks composer footer controls while the model is loading", () => {
     render(
       <ComposerCard
@@ -42,8 +59,7 @@ describe("ComposerCard", () => {
     );
 
     expect(screen.getByRole("button", { name: "Settings" })).toHaveProperty("disabled", true);
-    expect(screen.getByLabelText("Model")).toHaveProperty("disabled", true);
-    expect(screen.getByRole("button", { name: "Loading model" })).toHaveProperty("disabled", true);
+    expect(screen.getByRole("button", { name: "Select model" })).toHaveProperty("disabled", true);
   });
 
   it("leaves composer footer controls usable when the model is ready", () => {
@@ -60,7 +76,7 @@ describe("ComposerCard", () => {
     );
 
     expect(screen.getByRole("button", { name: "Settings" })).toHaveProperty("disabled", false);
-    expect(screen.getByLabelText("Model")).toHaveProperty("disabled", false);
+    expect(screen.getByRole("button", { name: "Select model" })).toHaveProperty("disabled", false);
     expect(screen.getByRole("button", { name: "Generate audio" })).toHaveProperty("disabled", false);
   });
 });

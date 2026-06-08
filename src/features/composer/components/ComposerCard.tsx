@@ -24,25 +24,20 @@ export function ComposerCard({
 }: ComposerCardProps) {
   return (
     <section className="composer-card" aria-label="Text to speech composer">
-      <div className="composer-input-zone">
-        <ComposerInput />
-        <div className="composer-footer">
-          <div className="composer-footer-left">
-            <ComposerSettingsDropdown disabled={isModelLoading} />
-          </div>
-          <div className="composer-footer-right">
-            <ModelDropdown disabled={isModelLoading} />
-            <ComposerActions
-              isSingleMode={isSingleMode}
-              isBusy={isBusy}
-              isBulkExporting={isBulkExporting}
-              isModelLoading={isModelLoading}
-              canGenerate={canGenerate}
-              onGenerate={onGenerate}
-              onCancel={onCancel}
-            />
-          </div>
-        </div>
+      <ComposerInput />
+      <div className="divider" />
+      <div className={`toolbar${isBusy ? " preview-disabled" : ""}`}>
+        <ComposerSettingsDropdown disabled={isModelLoading} />
+        <ModelDropdown disabled={isModelLoading} />
+        <ComposerActions
+          isSingleMode={isSingleMode}
+          isBusy={isBusy}
+          isBulkExporting={isBulkExporting}
+          isModelLoading={isModelLoading}
+          canGenerate={canGenerate}
+          onGenerate={onGenerate}
+          onCancel={onCancel}
+        />
       </div>
     </section>
   );
