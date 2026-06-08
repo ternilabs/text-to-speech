@@ -87,7 +87,6 @@ textarea:focus-visible {
   display: grid;
   gap: 12px;
   padding: 12px;
-  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 28%, transparent);
   border-radius: 16px;
   background: var(--color-paper-white);
 }
@@ -95,7 +94,6 @@ textarea:focus-visible {
 .composer-card {
   width: min(100% - 32px, 600px);
   box-sizing: border-box;
-  border: 1px solid color-mix(in srgb, var(--color-faded-stone) 26%, transparent);
   border-radius: 16px;
   background: var(--color-parchment);
 }
