@@ -114,16 +114,15 @@ textarea:focus-visible {
 .composer-textarea {
   box-sizing: border-box;
   width: 100%;
-  min-height: 176px;
-  max-height: 176px;
-  padding: 4px 4px 8px;
+  min-height: 128px;
   resize: none;
   border: 0;
   border-radius: 8px;
   outline: none;
   background: transparent;
   color: var(--color-inkwell);
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 .composer-textarea::placeholder {
