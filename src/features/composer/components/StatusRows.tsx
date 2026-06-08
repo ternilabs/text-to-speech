@@ -1,11 +1,17 @@
 import type { TtsMode, TtsStatus } from "../../tts/types";
 
+type Progress = {
+  current: number;
+  total: number;
+};
+
 type StatusRowsProps = {
   mode: TtsMode;
   status: TtsStatus;
+  progress?: Progress;
 };
 
-export function StatusRows({ mode, status }: StatusRowsProps) {
+export function StatusRows({ mode, status, progress }: StatusRowsProps) {
   const isLoading = status === "loading-model";
   const isGenerating = status === "generating";
   const isExporting = status === "exporting";
@@ -26,7 +32,11 @@ export function StatusRows({ mode, status }: StatusRowsProps) {
 
       <div className={`gen-row${isExporting ? " show" : ""}`} role={isExporting ? "status" : undefined}>
         <div className="spinner" />
-        <span>Exporting ZIP...</span>
+        <span>
+          {progress && progress.total > 0
+            ? `Synthesizing audio ${progress.current}/${progress.total}...`
+            : "Synthesizing audio..."}
+        </span>
       </div>
 
       <div className={`error-row${isError ? " show" : ""}`} role={isError ? "alert" : undefined}>

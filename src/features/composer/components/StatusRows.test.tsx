@@ -13,14 +13,17 @@ describe("StatusRows", () => {
   it("shows generating row when status is generating", () => {
     render(<StatusRows mode="single" status="generating" />);
 
-    expect(screen.getByText("Synthesizing audio...")).toBeTruthy();
-    expect(document.querySelector(".gen-row.show")).toBeTruthy();
+    const shownRow = document.querySelector(".gen-row.show");
+    expect(shownRow?.textContent).toBe("Synthesizing audio...");
+    expect(shownRow).toBeTruthy();
   });
 
-  it("shows exporting row when status is exporting", () => {
-    render(<StatusRows mode="bulk" status="exporting" />);
+  it("shows exporting row with progress when status is exporting", () => {
+    render(<StatusRows mode="bulk" status="exporting" progress={{ current: 3, total: 10 }} />);
 
-    expect(screen.getByText("Exporting ZIP...")).toBeTruthy();
+    const shownRow = document.querySelector(".gen-row.show");
+    expect(shownRow?.textContent).toBe("Synthesizing audio 3/10...");
+    expect(shownRow).toBeTruthy();
   });
 
   it("shows single error row when status is error in single mode", () => {
