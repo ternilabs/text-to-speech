@@ -1,5 +1,5 @@
-import { AudioCard, ComposerCard, StatusRows } from "../features/composer";
-import { useBulkExport } from "../features/bulk/useBulkExport";
+import { AudioCard, ComposerCard, StatusRows } from "@/features/composer";
+import { useBulkExport } from "@/features/bulk/useBulkExport";
 import {
   appErrorSignal,
   appWarningsSignal,
@@ -12,7 +12,7 @@ import {
   speedSignal,
   statusMessageSignal,
   statusSignal,
-} from "../features/tts/signals";
+} from "@/features/tts/signals";
 import { AppShell } from "./AppShell";
 import { useSingleGeneration } from "./useSingleGeneration";
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "preact/hooks";
-import { encodeMp3WithFallbackSignal } from "../features/tts/audio/mp3";
-import { validateMp3 } from "../features/tts/audio/validate";
-import { encodeWav } from "../features/tts/audio/wav";
+import { encodeMp3WithFallbackSignal } from "@/features/tts/audio/mp3";
+import { validateMp3 } from "@/features/tts/audio/validate";
+import { encodeWav } from "@/features/tts/audio/wav";
 import {
   appErrorSignal,
   appWarningsSignal,
@@ -13,9 +13,9 @@ import {
   statusMessageSignal,
   statusSignal,
   textSignal,
-} from "../features/tts/signals";
-import type { OutputFormat } from "../features/tts/types";
-import { createTtsWorkerClient } from "../features/tts/workerClient";
+} from "@/features/tts/signals";
+import type { OutputFormat } from "@/features/tts/types";
+import { createTtsWorkerClient } from "@/features/tts/workerClient";
 
 const revokeResultUrl = () => {
   if (singleAudioResultSignal.value) {
