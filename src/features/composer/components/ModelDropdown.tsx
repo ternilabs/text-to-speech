@@ -62,7 +62,7 @@ export function ModelDropdown({ disabled = false }: ModelDropdownProps) {
           <span className="model-check" />
           <span>
             <span className="model-title">Pollinations</span>
-            <span className="model-desc">Coming soon — not implemented in the current source scope.</span>
+            <span className="model-desc">Coming soon.</span>
           </span>
         </button>
       </div>
