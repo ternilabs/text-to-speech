@@ -45,9 +45,3 @@ export const VOICE_OPTIONS = [
   { id: "bm_fable", name: "Fable", language: "en-gb", gender: "Male" },
 ] as const satisfies readonly VoiceOption[];
 
-export type VoiceId = (typeof VOICE_OPTIONS)[number]["id"];
-
-export const LANGUAGE_LABELS: Record<string, string> = {
-  "en-us": "American English",
-  "en-gb": "British English",
-};
