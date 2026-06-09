@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from "preact/hooks";
 import { ZipPassThrough } from "fflate";
-import { encodeMp3WithFallbackSignal } from "../tts/audio/mp3";
-import { validateMp3 } from "../tts/audio/validate";
-import { encodeWav } from "../tts/audio/wav";
-import { createTtsWorkerClient } from "../tts/workerClient";
-import type { DeviceOption, OutputFormat } from "../tts/types";
+import { encodeMp3WithFallbackSignal } from "@/features/tts/audio/mp3";
+import { validateMp3 } from "@/features/tts/audio/validate";
+import { encodeWav } from "@/features/tts/audio/wav";
+import { createTtsWorkerClient } from "@/features/tts/workerClient";
+import type { DeviceOption, OutputFormat } from "@/features/tts/types";
 import type { BulkRow } from "./csv";
 import { createUniqueFilenameStems } from "./filename";
 import {

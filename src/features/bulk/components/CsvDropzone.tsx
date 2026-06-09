@@ -1,11 +1,11 @@
 import { useState } from "preact/hooks";
 import { Upload } from "preact-feather";
-import { parseCsvToBulkRows } from "../csv";
+import { parseCsvToBulkRows } from "@/features/bulk/csv";
 import {
   bulkFileNameSignal,
   bulkParseErrorSignal,
   bulkRowsSignal,
-} from "../../tts/signals";
+} from "@/features/tts/signals";
 
 const readCsvFile = async (file: File) => {
   bulkFileNameSignal.value = file.name;

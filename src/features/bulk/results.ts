@@ -1,4 +1,4 @@
-import type { OutputFormat } from "../tts/types";
+import type { OutputFormat } from "@/features/tts/types";
 
 export type BulkRowOutcome = {
   rowIndex: number;
