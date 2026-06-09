@@ -1,4 +1,4 @@
-import { textSignal } from "../signals";
+import { textSignal } from "@/features/tts/signals";
 
 export function TextInputPanel() {
   return (

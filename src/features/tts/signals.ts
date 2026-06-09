@@ -7,7 +7,7 @@ import {
 } from "./constants";
 import { loadStoredTtsSettings, saveTtsSettings } from "./settingsStorage";
 import type { BulkInputSource, DeviceOption, OutputFormat, TtsMode, TtsStatus } from "./types";
-import type { BulkRow } from "../bulk/csv";
+import type { BulkRow } from "@/features/bulk/csv";
 
 export type SingleAudioResult = {
   url: string;

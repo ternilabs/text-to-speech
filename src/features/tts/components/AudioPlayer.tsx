@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Download, Pause, Play } from "preact-feather";
-import type { SingleAudioResult } from "../signals";
+import type { SingleAudioResult } from "@/features/tts/signals";
 
 type AudioPlayerProps = {
   result: SingleAudioResult | null;

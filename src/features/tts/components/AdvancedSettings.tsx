@@ -4,8 +4,8 @@ import {
   deviceSignal,
   settingsOpenSignal,
   speedSignal,
-} from "../signals";
-import type { DeviceOption } from "../types";
+} from "@/features/tts/signals";
+import type { DeviceOption } from "@/features/tts/types";
 
 type NavigatorWithGpu = Navigator & {
   gpu?: unknown;

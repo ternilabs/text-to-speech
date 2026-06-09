@@ -1,6 +1,6 @@
 import { createMp3Encoder } from "wasm-media-encoders";
-import { MP3_BITRATE_KBPS } from "../constants";
-import type { PcmAudio } from "../types";
+import { MP3_BITRATE_KBPS } from "@/features/tts/constants";
+import type { PcmAudio } from "@/features/tts/types";
 
 export type Mp3EncodeResult =
   | { ok: true; bytes: Uint8Array; mimeType: "audio/mpeg" }

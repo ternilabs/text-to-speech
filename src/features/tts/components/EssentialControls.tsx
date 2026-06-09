@@ -1,9 +1,9 @@
-import { VOICE_OPTIONS } from "../constants";
+import { VOICE_OPTIONS } from "@/features/tts/constants";
 import {
   outputFormatSignal,
   selectedVoiceSignal,
-} from "../signals";
-import type { OutputFormat } from "../types";
+} from "@/features/tts/signals";
+import type { OutputFormat } from "@/features/tts/types";
 
 export function EssentialControls() {
   return (

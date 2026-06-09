@@ -1,4 +1,4 @@
-import type { PcmAudio } from "../types";
+import type { PcmAudio } from "@/features/tts/types";
 
 const WAV_HEADER_BYTES = 44;
 const PCM_FORMAT = 1;

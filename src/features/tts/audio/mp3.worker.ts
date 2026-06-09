@@ -1,5 +1,5 @@
 import { encodeMp3WithFallbackSignal } from "./mp3";
-import type { PcmAudio } from "../types";
+import type { PcmAudio } from "@/features/tts/types";
 
 type Mp3WorkerRequest = {
   type: "encode";
