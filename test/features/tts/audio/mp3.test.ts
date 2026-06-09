@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { encodeMp3WithFallbackSignal } from "./mp3";
-import { validateMp3 } from "./validate";
+import { encodeMp3WithFallbackSignal } from "@/features/tts/audio/mp3";
+import { validateMp3 } from "@/features/tts/audio/validate";
 
 const { createMp3Encoder } = vi.hoisted(() => ({
   createMp3Encoder: vi.fn(),

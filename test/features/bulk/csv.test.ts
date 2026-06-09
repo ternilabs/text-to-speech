@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseCsvToBulkRows } from "./csv";
+import { parseCsvToBulkRows } from "@/features/bulk/csv";
 
 describe("parseCsvToBulkRows", () => {
   it("parses id and text columns", () => {

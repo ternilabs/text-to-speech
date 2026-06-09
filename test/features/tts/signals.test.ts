@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { TTS_SETTINGS_STORAGE_KEY } from "./settingsStorage";
+import { TTS_SETTINGS_STORAGE_KEY } from "@/features/tts/settingsStorage";
 
 const importSignals = async () => {
   vi.resetModules();
-  return import("./signals");
+  return import("@/features/tts/signals");
 };
 
 describe("tts signals settings persistence", () => {

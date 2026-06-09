@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createUniqueFilenameStems, sanitizeFilenameStem } from "./filename";
+import { createUniqueFilenameStems, sanitizeFilenameStem } from "@/features/bulk/filename";
 
 describe("sanitizeFilenameStem", () => {
   it("replaces invalid filename characters", () => {

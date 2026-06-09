@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/preact";
 import { describe, expect, it } from "vitest";
-import type { SingleAudioResult } from "../../tts/signals";
-import { ComposerAudioPlayer } from "./ComposerAudioPlayer";
+import type { SingleAudioResult } from "@/features/tts/signals";
+import { ComposerAudioPlayer } from "@/features/composer/components/ComposerAudioPlayer";
 
 const result: SingleAudioResult = {
   url: "blob:test-audio",

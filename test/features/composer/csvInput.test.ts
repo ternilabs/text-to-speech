@@ -5,8 +5,8 @@ import {
   bulkInputSourceSignal,
   bulkParseErrorSignal,
   bulkRowsSignal,
-} from "../tts/signals";
-import { applyBulkCsvFileText, applyBulkCsvText, clearBulkCsvInput, setBulkInputSource } from "./csvInput";
+} from "@/features/tts/signals";
+import { applyBulkCsvFileText, applyBulkCsvText, clearBulkCsvInput, setBulkInputSource } from "@/features/composer/csvInput";
 
 const resetBulkSignals = () => {
   bulkInputSourceSignal.value = "import";

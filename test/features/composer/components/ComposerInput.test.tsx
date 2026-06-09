@@ -8,9 +8,9 @@ import {
   bulkRowsSignal,
   modeSignal,
   textSignal,
-} from "../../tts/signals";
-import { setBulkInputSource } from "../csvInput";
-import { ComposerInput } from "./ComposerInput";
+} from "@/features/tts/signals";
+import { setBulkInputSource } from "@/features/composer/csvInput";
+import { ComposerInput } from "@/features/composer/components/ComposerInput";
 
 const queryCsvFormatNote = () =>
   screen.queryByText((_, element) =>

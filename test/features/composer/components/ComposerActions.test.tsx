@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/preact";
 import { describe, expect, it, vi } from "vitest";
-import { ComposerActions } from "./ComposerActions";
+import { ComposerActions } from "@/features/composer/components/ComposerActions";
 
 describe("ComposerActions", () => {
   it("hides cancel button during model loading", () => {

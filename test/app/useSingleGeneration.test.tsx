@@ -11,8 +11,8 @@ import {
   statusMessageSignal,
   statusSignal,
   textSignal,
-} from "../features/tts/signals";
-import { useSingleGeneration } from "./useSingleGeneration";
+} from "@/features/tts/signals";
+import { useSingleGeneration } from "@/app/useSingleGeneration";
 
 const workerClientMock = vi.hoisted(() => ({
   load: vi.fn(),
@@ -21,7 +21,7 @@ const workerClientMock = vi.hoisted(() => ({
   dispose: vi.fn(),
 }));
 
-vi.mock("../features/tts/workerClient", () => ({
+vi.mock("@/features/tts/workerClient", () => ({
   createTtsWorkerClient: vi.fn(() => workerClientMock),
 }));
 

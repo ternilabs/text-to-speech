@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { encodeWav } from "./wav";
+import { encodeWav } from "@/features/tts/audio/wav";
 
 describe("encodeWav", () => {
   it("writes RIFF/WAVE headers and PCM data", () => {

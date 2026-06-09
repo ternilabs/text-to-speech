@@ -9,8 +9,8 @@ import {
   modeSignal,
   settingsOpenSignal,
   textSignal,
-} from "../../tts/signals";
-import { ComposerCard } from "./ComposerCard";
+} from "@/features/tts/signals";
+import { ComposerCard } from "@/features/composer/components/ComposerCard";
 
 const resetSignals = () => {
   modeSignal.value = "single";

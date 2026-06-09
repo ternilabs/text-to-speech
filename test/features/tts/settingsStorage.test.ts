@@ -4,7 +4,7 @@ import {
   loadStoredTtsSettings,
   normalizeTtsSettings,
   saveTtsSettings,
-} from "./settingsStorage";
+} from "@/features/tts/settingsStorage";
 
 const createStorage = (initialValue: string | null = null) => {
   let value = initialValue;

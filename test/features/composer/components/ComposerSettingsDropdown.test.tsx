@@ -17,10 +17,10 @@ import {
   speedSignal,
   statusMessageSignal,
   statusSignal,
-} from "../../tts/signals";
-import { TTS_SETTINGS_STORAGE_KEY } from "../../tts/settingsStorage";
-import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
-import { ModelDropdown } from "./ModelDropdown";
+} from "@/features/tts/signals";
+import { TTS_SETTINGS_STORAGE_KEY } from "@/features/tts/settingsStorage";
+import { ComposerSettingsDropdown } from "@/features/composer/components/ComposerSettingsDropdown";
+import { ModelDropdown } from "@/features/composer/components/ModelDropdown";
 
 const resetSignals = () => {
   modeSignal.value = "single";

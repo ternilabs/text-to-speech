@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/preact";
 import { describe, expect, it } from "vitest";
-import { StatusRows } from "./StatusRows";
+import { StatusRows } from "@/features/composer/components/StatusRows";
 
 describe("StatusRows", () => {
   it("shows loading model row when status is loading-model", () => {

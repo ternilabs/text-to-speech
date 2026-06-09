@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/preact";
 import { describe, expect, it } from "vitest";
-import type { SingleAudioResult } from "../../tts/signals";
-import { ComposerStatePanel } from "./ComposerStatePanel";
+import type { SingleAudioResult } from "@/features/tts/signals";
+import { ComposerStatePanel } from "@/features/composer/components/ComposerStatePanel";
 
 describe("ComposerStatePanel", () => {
   it("shows loading-model as a visible working status", () => {

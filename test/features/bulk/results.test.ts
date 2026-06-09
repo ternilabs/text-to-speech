@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildResultsManifest, type BulkRowOutcome } from "./results";
+import { buildResultsManifest, type BulkRowOutcome } from "@/features/bulk/results";
 
 describe("buildResultsManifest", () => {
   it("returns pretty JSON with row outcomes", () => {
