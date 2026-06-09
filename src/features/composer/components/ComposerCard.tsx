@@ -1,4 +1,4 @@
-import { bulkParseErrorSignal } from "../../tts/signals";
+import { bulkParseErrorSignal } from "@/features/tts/signals";
 import { ComposerActions } from "./ComposerActions";
 import { ComposerInput } from "./ComposerInput";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";

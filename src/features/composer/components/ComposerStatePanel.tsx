@@ -1,6 +1,6 @@
 import { AlertTriangle, CheckCircle, Loader } from "preact-feather";
-import type { SingleAudioResult } from "../../tts/signals";
-import type { TtsMode, TtsStatus } from "../../tts/types";
+import type { SingleAudioResult } from "@/features/tts/signals";
+import type { TtsMode, TtsStatus } from "@/features/tts/types";
 import { ComposerAudioPlayer } from "./ComposerAudioPlayer";
 
 type ProgressState = {

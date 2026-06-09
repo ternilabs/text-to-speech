@@ -7,8 +7,8 @@ import {
   bulkRowsSignal,
   modeSignal,
   textSignal,
-} from "../../tts/signals";
-import { applyBulkCsvFileText, applyBulkCsvText } from "../csvInput";
+} from "@/features/tts/signals";
+import { applyBulkCsvFileText, applyBulkCsvText } from "@/features/composer/csvInput";
 
 const MAX_WORDS = 500;
 

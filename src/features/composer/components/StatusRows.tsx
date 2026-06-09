@@ -1,4 +1,4 @@
-import type { TtsMode, TtsStatus } from "../../tts/types";
+import type { TtsMode, TtsStatus } from "@/features/tts/types";
 
 type Progress = {
   current: number;

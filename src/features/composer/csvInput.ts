@@ -1,12 +1,12 @@
-import { parseCsvToBulkRows } from "../bulk/csv";
+import { parseCsvToBulkRows } from "@/features/bulk/csv";
 import {
   bulkCsvTextSignal,
   bulkFileNameSignal,
   bulkInputSourceSignal,
   bulkParseErrorSignal,
   bulkRowsSignal,
-} from "../tts/signals";
-import type { BulkInputSource } from "../tts/types";
+} from "@/features/tts/signals";
+import type { BulkInputSource } from "@/features/tts/types";
 
 const EMPTY_ROWS_ERROR = "CSV did not contain any valid text rows.";
 

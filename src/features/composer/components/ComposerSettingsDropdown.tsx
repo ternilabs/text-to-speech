@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { ChevronDown, Settings } from "preact-feather";
-import { VOICE_OPTIONS } from "../../tts/constants";
-import { setBulkInputSource } from "../csvInput";
+import { VOICE_OPTIONS } from "@/features/tts/constants";
+import { setBulkInputSource } from "@/features/composer/csvInput";
 import {
   appErrorSignal,
   appWarningsSignal,
@@ -20,8 +20,8 @@ import {
   statusMessageSignal,
   statusSignal,
   textSignal,
-} from "../../tts/signals";
-import type { DeviceOption, OutputFormat } from "../../tts/types";
+} from "@/features/tts/signals";
+import type { DeviceOption, OutputFormat } from "@/features/tts/types";
 
 type NavigatorWithGpu = Navigator & {
   gpu?: unknown;
