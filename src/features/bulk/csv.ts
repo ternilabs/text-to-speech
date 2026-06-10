@@ -10,6 +10,8 @@ export type BulkParseResult = {
   error?: string;
 };
 
+export const MAX_BULK_ROWS = 50;
+
 const ID_ALIASES = ["id", "name", "filename"];
 const TEXT_ALIASES = ["text", "paragraph", "content"];
 
@@ -71,7 +73,7 @@ const splitCsvRows = (input: string) => {
 const findHeaderIndex = (headers: string[], aliases: string[]) =>
   headers.findIndex((header) => aliases.includes(header));
 
-export const parseCsvToBulkRows = (input: string): BulkParseResult => {
+export const parseCsvToBulkRows = (input: string, maxRows: number = MAX_BULK_ROWS): BulkParseResult => {
   const sanitized = input.replace(/^\uFEFF/, "").trim();
   if (!sanitized) {
     return { rows: [], hasHeader: false };
@@ -116,6 +118,14 @@ export const parseCsvToBulkRows = (input: string): BulkParseResult => {
     const id = (csvRow[idIndex] ?? "").trim() || buildGeneratedId(rowIndex);
 
     rows.push({ rowIndex, id, text });
+  }
+
+  if (maxRows !== undefined && rows.length > maxRows) {
+    return {
+      rows: [],
+      hasHeader: true,
+      error: `CSV contains ${rows.length} rows. Maximum is ${maxRows} rows.`,
+    };
   }
 
   return { rows, hasHeader: true };
