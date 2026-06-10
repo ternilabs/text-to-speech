@@ -10,15 +10,12 @@ import {
 } from "@/features/tts/signals";
 import { applyBulkCsvFileText, applyBulkCsvText } from "@/features/composer/csvInput";
 
-const MAX_WORDS = 500;
+const MAX_CHARS = 1000;
 
-const countWords = (value: string) => {
-  return value.trim() ? value.trim().split(/\s+/).length : 0;
-};
+const countChars = (value: string) => value.length;
 
-const limitWords = (value: string, maxWords: number) => {
-  const words = value.trim().split(/\s+/).filter(Boolean);
-  return words.length > maxWords ? words.slice(0, maxWords).join(" ") : value;
+const limitChars = (value: string, maxChars: number) => {
+  return value.length > maxChars ? value.slice(0, maxChars) : value;
 };
 
 const readCsvFile = async (file: File) => {
@@ -49,30 +46,31 @@ export function ComposerInput({ isBusy }: ComposerInputProps) {
   const rowCount = bulkRowsSignal.value.length;
 
   if (!isBulkMode) {
-    const wordCount = countWords(textSignal.value);
+    const charCount = countChars(textSignal.value);
 
     return (
       <section id="single-panel" className="composer-input-pane" role="tabpanel">
-        <textarea
-          className="composer-textarea"
-          value={textSignal.value}
-          placeholder="Enter text to convert to speech..."
-          rows={6}
-          disabled={isBusy}
-          onInput={(event) => {
-            const raw = (event.currentTarget as HTMLTextAreaElement).value;
-            const limited = limitWords(raw, MAX_WORDS);
-            if (limited !== raw) {
-              textSignal.value = limited;
-              event.currentTarget.value = limited;
-            } else {
-              textSignal.value = raw;
-            }
-          }}
-        />
-        <div className="char-row">
-          <span className="char-count">{wordCount} / {MAX_WORDS}</span>
-        </div>
+          <textarea
+            className="composer-textarea"
+            value={textSignal.value}
+            placeholder="Enter text to convert to speech..."
+            rows={6}
+            maxLength={MAX_CHARS}
+            disabled={isBusy}
+            onInput={(event) => {
+              const raw = (event.currentTarget as HTMLTextAreaElement).value;
+              const limited = limitChars(raw, MAX_CHARS);
+              if (limited !== raw) {
+                textSignal.value = limited;
+                event.currentTarget.value = limited;
+              } else {
+                textSignal.value = raw;
+              }
+            }}
+          />
+          <div className="char-row">
+            <span className="char-count">{charCount} / {MAX_CHARS}</span>
+          </div>
       </section>
     );
   }

@@ -41,25 +41,32 @@ describe("ComposerInput", () => {
     expect(textSignal.value).toBe("Hello from composer");
   });
 
-  it("shows word count and enforces 500 word limit in single mode", () => {
+  it("shows character count and enforces 1000 character limit in single mode", () => {
     render(<ComposerInput isBusy={false} />);
 
     const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
-    const words = Array.from({ length: 5 }, () => "word").join(" ");
-    fireEvent.input(textarea, { target: { value: words } });
+    fireEvent.input(textarea, { target: { value: "Hello" } });
 
-    expect(screen.getByText("5 / 500")).toBeTruthy();
+    expect(screen.getByText("5 / 1000")).toBeTruthy();
   });
 
-  it("truncates input at 500 words", () => {
+  it("truncates input at 1000 characters", () => {
     render(<ComposerInput isBusy={false} />);
 
     const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
-    const manyWords = Array.from({ length: 510 }, (_, i) => `word${i}`).join(" ");
-    fireEvent.input(textarea, { target: { value: manyWords } });
+    const manyChars = "x".repeat(1010);
+    fireEvent.input(textarea, { target: { value: manyChars } });
 
-    expect(textSignal.value.split(/\s+/).filter(Boolean).length).toBeLessThanOrEqual(500);
-    expect(screen.getByText("500 / 500")).toBeTruthy();
+    expect(textSignal.value.length).toBeLessThanOrEqual(1000);
+    expect(screen.getByText("1000 / 1000")).toBeTruthy();
+  });
+
+  it("has maxLength attribute on textarea to prevent typing beyond limit", () => {
+    render(<ComposerInput isBusy={false} />);
+
+    const textarea = screen.getByPlaceholderText("Enter text to convert to speech...") as HTMLTextAreaElement;
+
+    expect(textarea.getAttribute("maxLength")).toBe("1000");
   });
 
   it("renders CSV import by default in bulk mode", () => {
