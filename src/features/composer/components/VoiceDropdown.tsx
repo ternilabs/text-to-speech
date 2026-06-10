@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { ChevronDown } from "preact-feather";
+import { ChevronDown, Volume2 } from "preact-feather";
 import { VOICE_OPTIONS } from "@/features/tts/constants";
 import { selectedVoiceSignal } from "@/features/tts/signals";
 
@@ -60,7 +60,7 @@ export function VoiceDropdown({ disabled = false }: VoiceDropdownProps) {
         onClick={() => { if (!disabled) setIsOpen(prev => !prev); }}
       >
         <span className="voice-button-label">
-          <span className="voice-dot" aria-hidden="true" />
+          <Volume2 size={14} strokeWidth={1.8} aria-hidden="true" />
           <span>{voiceLabel}</span>
         </span>
         <ChevronDown size={13} strokeWidth={2} />

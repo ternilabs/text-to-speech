@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { ChevronDown } from "preact-feather";
+import { ChevronDown, Cpu } from "preact-feather";
 
 type ModelDropdownProps = {
   disabled?: boolean;
@@ -45,7 +45,7 @@ export function ModelDropdown({ disabled = false }: ModelDropdownProps) {
         }}
       >
         <span className="model-button-label">
-          <span className="model-dot" aria-hidden="true" />
+          <Cpu size={14} strokeWidth={1.8} aria-hidden="true" />
           <span>Kokoro</span>
         </span>
         <ChevronDown size={13} strokeWidth={2} />

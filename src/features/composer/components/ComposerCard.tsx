@@ -32,7 +32,7 @@ export function ComposerCard({
         <div className={`toolbar${isBusy ? " preview-disabled" : ""}`}>
           <ComposerSettingsDropdown disabled={isModelLoading} />
           <ModelDropdown disabled={isModelLoading} />
-          <VoiceDropdown disabled={isModelLoading} />
+          <VoiceDropdown disabled={isModelLoading || isBusy} />
           <ComposerActions
             isSingleMode={isSingleMode}
             isBusy={isBusy}

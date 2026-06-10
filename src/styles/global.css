@@ -52,12 +52,16 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+button:disabled:focus-visible {
+  outline: none;
+}
+
 .app-shell {
   min-height: 100vh;
   box-sizing: border-box;
   display: grid;
   align-content: center;
-  gap: 8px;
+  gap: 16px;
   padding: 32px 24px 48px;
 }
 
@@ -972,7 +976,7 @@ textarea:focus-visible {
 
 .model-anchor {
   position: relative;
-  min-width: 260px;
+  min-width: 160px;
 }
 .model-button {
   width: 100%;
@@ -1374,7 +1378,7 @@ textarea:disabled {
 
 .voice-anchor {
   position: relative;
-  min-width: 260px;
+  min-width: 120px;
 }
 .voice-button {
   width: 100%;
@@ -1428,6 +1432,8 @@ textarea:disabled {
   left: 0;
   z-index: 60;
   width: min(320px, calc(100vw - 48px));
+  max-height: 280px;
+  overflow-y: auto;
   background: var(--color-paper-white);
   border: 1px solid color-mix(in srgb, var(--color-faded-stone) 24%, transparent);
   border-radius: 14px;
@@ -1483,6 +1489,29 @@ textarea:disabled {
   padding: 7px 10px 4px;
   color: var(--color-dusk-gray);
   font-size: 11px;
+}
+
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 14px 24px;
+  font-size: 12px;
+  color: var(--color-dusk-gray);
+  background: var(--color-paper-white);
+  z-index: 50;
+}
+.app-footer a {
+  color: var(--color-dusk-gray);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.app-footer a:hover {
+  color: var(--color-graphite);
 }
 
 @media (max-width: 680px) {
