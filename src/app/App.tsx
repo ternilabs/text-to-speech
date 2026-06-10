@@ -81,12 +81,14 @@ export function App() {
         onGenerate={isSingleMode ? singleGeneration.generate : handleBulkGenerate}
         onCancel={handleCancel}
       />
-      <StatusRows
-        mode={modeSignal.value}
-        status={mergedError ? "error" : statusSignal.value}
-        progress={bulkExport.progress}
-      />
-      {isReady ? <AudioCard result={singleAudioResultSignal.value!} /> : null}
+      <div className="content-area">
+        <StatusRows
+          mode={modeSignal.value}
+          status={mergedError ? "error" : statusSignal.value}
+          progress={bulkExport.progress}
+        />
+        {isReady ? <AudioCard result={singleAudioResultSignal.value!} /> : null}
+      </div>
     </AppShell>
   );
 }
