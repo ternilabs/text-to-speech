@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import { ChevronDown, Settings } from "preact-feather";
-import { VOICE_OPTIONS } from "@/features/tts/constants";
 import { setBulkInputSource } from "@/features/composer/csvInput";
 import {
   appErrorSignal,
@@ -13,7 +12,6 @@ import {
   deviceSignal,
   modeSignal,
   outputFormatSignal,
-  selectedVoiceSignal,
   settingsOpenSignal,
   singleAudioResultSignal,
   speedSignal,
@@ -50,13 +48,6 @@ const BACKEND_OPTIONS = [
   { value: "wasm", label: "WASM / CPU" },
   { value: "webgpu", label: "WebGPU" },
 ];
-
-const VOICE_GROUPS = [
-  { label: "American Female", voices: VOICE_OPTIONS.filter(v => v.id.startsWith("af_")) },
-  { label: "American Male", voices: VOICE_OPTIONS.filter(v => v.id.startsWith("am_")) },
-  { label: "British Female", voices: VOICE_OPTIONS.filter(v => v.id.startsWith("bf_")) },
-  { label: "British Male", voices: VOICE_OPTIONS.filter(v => v.id.startsWith("bm_")) },
-].filter(g => g.voices.length > 0);
 
 export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsDropdownProps) {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -129,11 +120,6 @@ export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsD
     setOpenMenu(null);
   };
 
-  const selectVoice = (voiceId: string) => {
-    selectedVoiceSignal.value = voiceId;
-    setOpenMenu(null);
-  };
-
   const selectFormat = (value: string) => {
     outputFormatSignal.value = value as OutputFormat;
     setOpenMenu(null);
@@ -143,8 +129,6 @@ export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsD
     deviceSignal.value = value as DeviceOption;
     setOpenMenu(null);
   };
-
-  const voiceLabel = selectedVoiceSignal.value;
 
   return (
     <div className="composer-dropdown-wrap" ref={dropdownRef}>
@@ -213,38 +197,6 @@ export function ComposerSettingsDropdown({ disabled = false }: ComposerSettingsD
                     <span className="setting-check">{bulkInputSourceSignal.value === opt.value ? "\u2713" : ""}</span>
                     {opt.label}
                   </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="sd-row">
-            <div>
-              <div className="sd-label">Voice</div>
-              <div className="sd-sub">Speaker preset</div>
-            </div>
-            <div className="setting-select-wrap">
-              <button
-                type="button"
-                className={`setting-select-button${openMenu === "voice" ? " open" : ""}`}
-                onClick={() => toggleMenu("voice")}
-                aria-haspopup="listbox"
-                aria-expanded={openMenu === "voice"}
-              >
-                <span className="setting-select-label">{voiceLabel}</span>
-                <ChevronDown className="setting-caret" size={13} strokeWidth={2} />
-              </button>
-              <div className={`setting-menu${openMenu === "voice" ? " open" : ""}`} role="listbox" aria-label="Voice selection">
-                {VOICE_GROUPS.map(group => (
-                  <div key={group.label} role="group" aria-label={group.label}>
-                    <div className="setting-group-label">{group.label}</div>
-                    {group.voices.map(voice => (
-                      <button key={voice.id} type="button" className={`setting-option${selectedVoiceSignal.value === voice.id ? " selected" : ""}`} onClick={() => selectVoice(voice.id)}>
-                        <span className="setting-check">{selectedVoiceSignal.value === voice.id ? "\u2713" : ""}</span>
-                        {voice.id}
-                      </button>
-                    ))}
-                  </div>
                 ))}
               </div>
             </div>

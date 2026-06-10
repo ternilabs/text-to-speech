@@ -66,15 +66,6 @@ describe("ComposerSettingsDropdown", () => {
     expect(modeSignal.value).toBe("bulk");
   });
 
-  it("selects voice from grouped dropdown", () => {
-    render(<ComposerSettingsDropdown />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Settings" }));
-    fireEvent.click(screen.getByRole("button", { name: "am_adam" }));
-
-    expect(selectedVoiceSignal.value).toBe("am_adam");
-  });
-
   it("selects format from dropdown", () => {
     render(<ComposerSettingsDropdown />);
 
@@ -149,7 +140,6 @@ describe("ComposerSettingsDropdown", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Settings" }));
     fireEvent.click(screen.getByRole("button", { name: "Bulk" }));
-    fireEvent.click(screen.getByRole("button", { name: "am_adam" }));
     fireEvent.click(screen.getByRole("button", { name: "MP3 Experimental" }));
     fireEvent.click(screen.getByRole("button", { name: "WebGPU" }));
     fireEvent.input(screen.getByRole("slider"), { target: { value: "1.15" } });
@@ -157,7 +147,7 @@ describe("ComposerSettingsDropdown", () => {
     expect(JSON.parse(localStorage.getItem(TTS_SETTINGS_STORAGE_KEY) ?? "{}")).toEqual({
       mode: "bulk",
       bulkInputSource: "import",
-      voice: "am_adam",
+      voice: "af_heart",
       format: "mp3",
       device: "webgpu",
       speed: 1.15,

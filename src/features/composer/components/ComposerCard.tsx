@@ -3,6 +3,7 @@ import { ComposerActions } from "./ComposerActions";
 import { ComposerInput } from "./ComposerInput";
 import { ComposerSettingsDropdown } from "./ComposerSettingsDropdown";
 import { ModelDropdown } from "./ModelDropdown";
+import { VoiceDropdown } from "./VoiceDropdown";
 
 type ComposerCardProps = {
   isSingleMode: boolean;
@@ -31,6 +32,7 @@ export function ComposerCard({
         <div className={`toolbar${isBusy ? " preview-disabled" : ""}`}>
           <ComposerSettingsDropdown disabled={isModelLoading} />
           <ModelDropdown disabled={isModelLoading} />
+          <VoiceDropdown disabled={isModelLoading} />
           <ComposerActions
             isSingleMode={isSingleMode}
             isBusy={isBusy}
